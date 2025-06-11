@@ -1,9 +1,10 @@
 // src/context/AuthContext.tsx
 import React, { createContext, useContext, useEffect, useState } from 'react'
+
 import {
   onAuthStateChanged,
-  signOut,
   signInWithEmailAndPassword,
+  signOut,
   type User,
 } from 'firebase/auth'
 

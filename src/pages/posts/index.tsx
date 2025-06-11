@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { useAuth } from '@/stores/AuthContext'
 import { fetchUserPosts } from '@/services/posts.service'
+import { useAuth } from '@/stores/AuthContext'
 import type { Post } from '@/types/post'
 
 export default function PostList() {

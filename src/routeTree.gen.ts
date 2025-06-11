@@ -10,123 +10,142 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as AboutImport } from './routes/about'
-import { Route as IndexImport } from './routes/index'
-import { Route as PostsIndexImport } from './routes/posts/index'
-import { Route as PostsAddImport } from './routes/posts/add'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as SaleImport } from "./routes/sale";
+import { Route as AboutImport } from "./routes/about";
+import { Route as IndexImport } from "./routes/index";
+import { Route as PostsIndexImport } from "./routes/posts/index";
+import { Route as PostsAddImport } from "./routes/posts/add";
 
 // Create/Update Routes
 
-const AboutRoute = AboutImport.update({
-  id: '/about',
-  path: '/about',
+const SaleRoute = SaleImport.update({
+  id: "/sale",
+  path: "/sale",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
+
+const AboutRoute = AboutImport.update({
+  id: "/about",
+  path: "/about",
+  getParentRoute: () => rootRoute,
+} as any);
 
 const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const PostsIndexRoute = PostsIndexImport.update({
-  id: '/posts/',
-  path: '/posts/',
+  id: "/posts/",
+  path: "/posts/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const PostsAddRoute = PostsAddImport.update({
-  id: '/posts/add',
-  path: '/posts/add',
+  id: "/posts/add",
+  path: "/posts/add",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
-    '/posts/add': {
-      id: '/posts/add'
-      path: '/posts/add'
-      fullPath: '/posts/add'
-      preLoaderRoute: typeof PostsAddImport
-      parentRoute: typeof rootRoute
-    }
-    '/posts/': {
-      id: '/posts/'
-      path: '/posts'
-      fullPath: '/posts'
-      preLoaderRoute: typeof PostsIndexImport
-      parentRoute: typeof rootRoute
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/about": {
+      id: "/about";
+      path: "/about";
+      fullPath: "/about";
+      preLoaderRoute: typeof AboutImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/sale": {
+      id: "/sale";
+      path: "/sale";
+      fullPath: "/sale";
+      preLoaderRoute: typeof SaleImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/posts/add": {
+      id: "/posts/add";
+      path: "/posts/add";
+      fullPath: "/posts/add";
+      preLoaderRoute: typeof PostsAddImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/posts/": {
+      id: "/posts/";
+      path: "/posts";
+      fullPath: "/posts";
+      preLoaderRoute: typeof PostsIndexImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/posts/add': typeof PostsAddRoute
-  '/posts': typeof PostsIndexRoute
+  "/": typeof IndexRoute;
+  "/about": typeof AboutRoute;
+  "/sale": typeof SaleRoute;
+  "/posts/add": typeof PostsAddRoute;
+  "/posts": typeof PostsIndexRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/posts/add': typeof PostsAddRoute
-  '/posts': typeof PostsIndexRoute
+  "/": typeof IndexRoute;
+  "/about": typeof AboutRoute;
+  "/sale": typeof SaleRoute;
+  "/posts/add": typeof PostsAddRoute;
+  "/posts": typeof PostsIndexRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/posts/add': typeof PostsAddRoute
-  '/posts/': typeof PostsIndexRoute
+  __root__: typeof rootRoute;
+  "/": typeof IndexRoute;
+  "/about": typeof AboutRoute;
+  "/sale": typeof SaleRoute;
+  "/posts/add": typeof PostsAddRoute;
+  "/posts/": typeof PostsIndexRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/posts/add' | '/posts'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/posts/add' | '/posts'
-  id: '__root__' | '/' | '/about' | '/posts/add' | '/posts/'
-  fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: "/" | "/about" | "/sale" | "/posts/add" | "/posts";
+  fileRoutesByTo: FileRoutesByTo;
+  to: "/" | "/about" | "/sale" | "/posts/add" | "/posts";
+  id: "__root__" | "/" | "/about" | "/sale" | "/posts/add" | "/posts/";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
-  PostsAddRoute: typeof PostsAddRoute
-  PostsIndexRoute: typeof PostsIndexRoute
+  IndexRoute: typeof IndexRoute;
+  AboutRoute: typeof AboutRoute;
+  SaleRoute: typeof SaleRoute;
+  PostsAddRoute: typeof PostsAddRoute;
+  PostsIndexRoute: typeof PostsIndexRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  SaleRoute: SaleRoute,
   PostsAddRoute: PostsAddRoute,
   PostsIndexRoute: PostsIndexRoute,
-}
+};
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
@@ -136,6 +155,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/sale",
         "/posts/add",
         "/posts/"
       ]
@@ -145,6 +165,9 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
+    },
+    "/sale": {
+      "filePath": "sale.tsx"
     },
     "/posts/add": {
       "filePath": "posts/add.tsx"

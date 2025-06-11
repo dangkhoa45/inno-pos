@@ -1,11 +1,11 @@
 import { type User } from 'firebase/auth'
 import {
-  collection,
   addDoc,
+  collection,
   getDocs,
+  orderBy,
   query,
   where,
-  orderBy,
 } from 'firebase/firestore'
 
 import { db } from '@/firebase'

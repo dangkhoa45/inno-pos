@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box'
 export default function About() {
-  return <h1>About Page</h1>
+  return <Box>About Page</Box>
 }
