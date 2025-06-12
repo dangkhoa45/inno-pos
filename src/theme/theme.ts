@@ -1,120 +1,180 @@
 import { createTheme } from '@mui/material/styles'
 
-// Custom color palette
-const colors = {
+// TD Design System Brand Colors
+export const tdColors = {
+  primary: '#0070f4',
+  secondary: '#677484',
+  default: '#677484',
+  success: '#00b63e',
+  info: '#0070f4',
+  warning: '#ff8800',
+  danger: '#ed232f',
+  error: '#ed232f',
+  link: '#0070f4',
+  promotion: '#ef06bc',
+  white: '#ffffff',
+  black: '#000000',
+} as const
+
+// Utility functions
+export const getColorWithOpacity = (color: string, opacity: number): string => {
+  const hex = color.replace('#', '')
+  const r = parseInt(hex.substr(0, 2), 16)
+  const g = parseInt(hex.substr(2, 2), 16)
+  const b = parseInt(hex.substr(4, 2), 16)
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`
+}
+
+export const isValidColor = (color: string): boolean => {
+  return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color)
+}
+
+// Color scales for theme
+export const colors = {
   primary: {
-    50: '#e3f2fd',
-    100: '#bbdefb',
-    200: '#90caf9',
-    300: '#64b5f6',
-    400: '#42a5f5',
-    500: '#2196f3',
-    600: '#1e88e5',
-    700: '#1976d2',
-    800: '#1565c0',
-    900: '#0d47a1',
+    50: '#e6f1fe',
+    100: '#cce2fd',
+    200: '#99c6fb',
+    300: '#66a9f8',
+    400: '#338df6',
+    500: '#0070f4',
+    600: '#005ac3',
+    700: '#004392',
+    800: '#002d62',
+    900: '#001631',
   },
   secondary: {
-    50: '#fce4ec',
-    100: '#f8bbd9',
-    200: '#f48fb1',
-    300: '#f06292',
-    400: '#ec407a',
-    500: '#e91e63',
-    600: '#d81b60',
-    700: '#c2185b',
-    800: '#ad1457',
-    900: '#880e4f',
+    50: '#f0f1f3',
+    100: '#e1e3e6',
+    200: '#c2c7ce',
+    300: '#a4acb5',
+    400: '#85909d',
+    500: '#677484',
+    600: '#525d6a',
+    700: '#3e464f',
+    800: '#292e35',
+    900: '#15171a',
   },
   success: {
-    50: '#e8f5e8',
-    100: '#c8e6c9',
-    200: '#a5d6a7',
-    300: '#81c784',
-    400: '#66bb6a',
-    500: '#4caf50',
-    600: '#43a047',
-    700: '#388e3c',
-    800: '#2e7d32',
-    900: '#1b5e20',
+    25: '#f2fbf5',
+    50: '#e6f8ec',
+    100: '#ccf0d8',
+    200: '#99e2b2',
+    300: '#66d38b',
+    400: '#33c565',
+    500: '#00b63e',
+    600: '#009232',
+    700: '#006d25',
+    800: '#004919',
+    900: '#00240c',
   },
   warning: {
-    50: '#fff8e1',
-    100: '#ffecb3',
-    200: '#ffe082',
-    300: '#ffd54f',
-    400: '#ffca28',
-    500: '#ffc107',
-    600: '#ffb300',
-    700: '#ffa000',
-    800: '#ff8f00',
-    900: '#ff6f00',
+    50: '#fff3e6',
+    100: '#ffe7cc',
+    200: '#ffcf99',
+    300: '#ffb866',
+    400: '#ffa033',
+    500: '#ff8800',
+    600: '#cc6d00',
+    700: '#995200',
+    800: '#663600',
+    900: '#331b00',
   },
   error: {
-    50: '#ffebee',
-    100: '#ffcdd2',
-    200: '#ef9a9a',
-    300: '#e57373',
-    400: '#ef5350',
-    500: '#f44336',
-    600: '#e53935',
-    700: '#d32f2f',
-    800: '#c62828',
-    900: '#b71c1c',
+    25: '#fef4f5',
+    50: '#fde9ea',
+    100: '#fbd3d5',
+    200: '#f8a7ac',
+    300: '#f47b82',
+    400: '#f14f59',
+    500: '#ed232f',
+    600: '#be1c26',
+    700: '#8e151c',
+    800: '#5f0e13',
+    900: '#2f0709',
   },
   grey: {
-    50: '#fafafa',
-    100: '#f5f5f5',
-    200: '#eeeeee',
-    300: '#e0e0e0',
-    400: '#bdbdbd',
-    500: '#9e9e9e',
-    600: '#757575',
-    700: '#616161',
-    800: '#424242',
-    900: '#212121',
+    25: '#f7f8f9',
+    50: '#f0f1f3',
+    75: '#e8eaed',
+    100: '#e1e3e6',
+    150: '#d1d5da',
+    200: '#c2c7ce',
+    250: '#b3bac2',
+    300: '#a4acb5',
+    350: '#959ea9',
+    400: '#85909d',
+    600: '#525d6a',
+    700: '#3e464f',
+    750: '#343a42',
+    800: '#292e35',
+    850: '#1f2328',
+    900: '#15171a',
+  },
+  promotion: {
+    50: '#fde6f8',
+    100: '#fccdf2',
+    200: '#f99be4',
+    300: '#f56ad7',
+    400: '#f238c9',
+    500: '#ef06bc',
+    600: '#bf0596',
+    700: '#8f0471',
+    800: '#60024b',
+    900: '#300126',
   },
 }
+
+// Type definitions
+export type TdColor = keyof typeof tdColors
+export type ColorScale = keyof typeof colors
+export type ColorShade = keyof typeof colors.primary
 
 // Light theme
 const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: colors.primary[600],
-      light: colors.primary[400],
-      dark: colors.primary[800],
+      main: colors.primary[500], // #0070f4
+      light: colors.primary[300], // #66a9f8
+      dark: colors.primary[700], // #004392
       contrastText: '#ffffff',
     },
     secondary: {
-      main: colors.secondary[500],
-      light: colors.secondary[300],
-      dark: colors.secondary[700],
+      main: colors.secondary[500], // #677484
+      light: colors.secondary[300], // #a4acb5
+      dark: colors.secondary[700], // #3e464f
       contrastText: '#ffffff',
     },
     error: {
-      main: colors.error[500],
-      light: colors.error[300],
-      dark: colors.error[700],
+      main: colors.error[500], // #ed232f
+      light: colors.error[300], // #f47b82
+      dark: colors.error[700], // #8e151c
     },
     warning: {
-      main: colors.warning[500],
-      light: colors.warning[300],
-      dark: colors.warning[700],
+      main: colors.warning[500], // #ff8800
+      light: colors.warning[300], // #ffb866
+      dark: colors.warning[700], // #995200
     },
     success: {
-      main: colors.success[500],
-      light: colors.success[300],
-      dark: colors.success[700],
+      main: colors.success[500], // #00b63e
+      light: colors.success[300], // #66d38b
+      dark: colors.success[700], // #006d25
+    },
+    info: {
+      main: colors.primary[500], // #0070f4 (using primary for info)
+      light: colors.primary[300],
+      dark: colors.primary[700],
     },
     background: {
-      default: '#fafafa',
+      default: colors.grey[25], // #f7f8f9
       paper: '#ffffff',
     },
     text: {
-      primary: colors.grey[900],
-      secondary: colors.grey[600],
+      primary: colors.grey[900], // #15171a
+      secondary: colors.grey[600], // #525d6a
     },
+    divider: colors.grey[200], // #c2c7ce
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
@@ -218,40 +278,46 @@ const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: colors.primary[400],
-      light: colors.primary[300],
-      dark: colors.primary[600],
+      main: colors.primary[400], // #338df6
+      light: colors.primary[300], // #66a9f8
+      dark: colors.primary[600], // #005ac3
       contrastText: '#ffffff',
     },
     secondary: {
-      main: colors.secondary[400],
-      light: colors.secondary[300],
-      dark: colors.secondary[600],
+      main: colors.secondary[400], // #85909d
+      light: colors.secondary[300], // #a4acb5
+      dark: colors.secondary[600], // #525d6a
       contrastText: '#ffffff',
     },
     error: {
-      main: colors.error[400],
-      light: colors.error[300],
-      dark: colors.error[600],
+      main: colors.error[400], // #f14f59
+      light: colors.error[300], // #f47b82
+      dark: colors.error[600], // #be1c26
     },
     warning: {
-      main: colors.warning[400],
-      light: colors.warning[300],
-      dark: colors.warning[600],
+      main: colors.warning[400], // #ffa033
+      light: colors.warning[300], // #ffb866
+      dark: colors.warning[600], // #cc6d00
     },
     success: {
-      main: colors.success[400],
-      light: colors.success[300],
-      dark: colors.success[600],
+      main: colors.success[400], // #33c565
+      light: colors.success[300], // #66d38b
+      dark: colors.success[600], // #009232
+    },
+    info: {
+      main: colors.primary[400], // #338df6
+      light: colors.primary[300],
+      dark: colors.primary[600],
     },
     background: {
-      default: '#121212',
-      paper: '#1e1e1e',
+      default: colors.grey[900], // #15171a
+      paper: colors.grey[850], // #1f2328
     },
     text: {
       primary: '#ffffff',
-      secondary: 'rgba(255, 255, 255, 0.7)',
+      secondary: colors.grey[400], // #85909d
     },
+    divider: colors.grey[700], // #3e464f
   },
   typography: lightTheme.typography,
   shape: lightTheme.shape,
@@ -261,11 +327,19 @@ const darkTheme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 12,
-          backgroundColor: '#1e1e1e',
+          backgroundColor: colors.grey[850], // #1f2328
           boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
           '&:hover': {
             boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
           },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          backgroundColor: colors.grey[850], // #1f2328
         },
       },
     },
