@@ -10,27 +10,21 @@ import ShoppingCart from './components/ShoppingCart'
 
 import type { CartItem, Customer, Product } from '../../types/sale'
 
-// Custom hook for cart management
 const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
 
   const addToCart = (product: Product) => {
-    if (product.stock === 0) return
-
     setCartItems((prevItems) => {
       const existingItem = prevItems.find(
         (item) => item.product.id === product.id,
       )
 
       if (existingItem) {
-        if (existingItem.quantity < product.stock) {
-          return prevItems.map((item) =>
-            item.product.id === product.id
-              ? { ...item, quantity: item.quantity + 1 }
-              : item,
-          )
-        }
-        return prevItems
+        return prevItems.map((item) =>
+          item.product.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
+        )
       }
       return [...prevItems, { product, quantity: 1 }]
     })
@@ -81,14 +75,12 @@ const useCart = () => {
   }
 }
 
-// Utility function for checkout processing
 const processCheckout = async (
   customer: Customer | null,
   cartItems: CartItem[],
   total: number,
 ) => {
   try {
-    // TODO: Implement actual checkout API call
     console.log('Processing checkout:', {
       customer,
       items: cartItems,
@@ -96,7 +88,6 @@ const processCheckout = async (
       timestamp: new Date().toISOString(),
     })
 
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
     return { success: true, message: 'Payment successful!' }
@@ -109,7 +100,7 @@ const processCheckout = async (
 function SalePage() {
   const {
     cartItems,
-
+    addToCart,
     updateQuantity,
     removeItem,
     clearCart,
@@ -156,7 +147,7 @@ function SalePage() {
         }}
       >
         <Grid size={{ xs: 12, md: 7 }}>
-          <ProductList />
+          <ProductList onAddToCart={addToCart} cartItems={cartItems} />
         </Grid>
 
         <Grid

@@ -8,7 +8,7 @@ import ProductItem from './ProductItem'
 import ProductListHeader from './ProductListHeader'
 import { mockProducts } from '../mockup/data-product'
 
-import type { Product } from '../../../types/sale'
+import type { Product, CartItem } from '../../../types/sale'
 
 interface FilterOptions {
   categories: string[]
@@ -19,7 +19,12 @@ interface FilterOptions {
   inStockOnly: boolean
 }
 
-const ProductList = () => {
+interface ProductListProps {
+  onAddToCart: (product: Product) => void
+  cartItems: CartItem[]
+}
+
+const ProductList = ({ onAddToCart, cartItems }: ProductListProps) => {
   const [filteredProducts, setFilteredProducts] =
     useState<Product[]>(mockProducts)
 
@@ -29,6 +34,11 @@ const ProductList = () => {
 
   const handleFiltersChange = (filters: FilterOptions) => {
     console.log('Filters changed:', filters)
+  }
+
+  // Helper function to check if a product is in cart
+  const isProductInCart = (productId: string) => {
+    return cartItems.some((item) => item.product.id === productId)
   }
 
   return (
@@ -71,7 +81,11 @@ const ProductList = () => {
               key={product.id}
               sx={{ display: 'flex' }}
             >
-              <ProductItem product={product} />
+              <ProductItem
+                product={product}
+                onAddToCart={onAddToCart}
+                isInCart={isProductInCart(product.id)}
+              />
             </Grid>
           ))}
         </Grid>

@@ -69,35 +69,52 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
+          p: 2,
+          '&:last-child': { pb: 2 },
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <ShoppingCartIcon sx={{ mr: 1 }} />
-          <Typography variant="h6">Item Cart ({cartItems.length})</Typography>
-        </Box>
-
-        {cartItems.length === 0 ? (
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              py: 4,
-            }}
-          >
-            <ShoppingCartIcon
-              sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }}
-            />
-            <Typography variant="body2" color="text.secondary">
-              No items in the cart
-            </Typography>
-          </Box>
-        ) : (
-          <>
-            <Box sx={{ flexGrow: 1, overflow: 'auto', mb: 2 }}>
-              <List dense>
+        <Typography variant="body1" fontWeight="bold" mb={1}>
+          Item Cart
+        </Typography>
+        <Box sx={{ overflow: 'auto', flexGrow: 1, height: 280, mx: -1, px: 1 }}>
+          {cartItems.length === 0 ? (
+            <Box
+              sx={{
+                height: '100%',
+                flexGrow: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                py: 4,
+              }}
+            >
+              <ShoppingCartIcon
+                sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }}
+              />
+              <Typography variant="body2" color="text.secondary">
+                No items in the cart
+              </Typography>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                flexGrow: 1,
+                overflow: 'auto',
+                mb: 2,
+                '&::-webkit-scrollbar': {
+                  width: '8px',
+                },
+                '&::-webkit-scrollbar-track': {
+                  background: '#f1f1f1',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  background: '#616161',
+                  borderRadius: 1,
+                },
+              }}
+            >
+              <List dense disablePadding>
                 {cartItems.map((item) => (
                   <ListItem
                     key={item.product.id}
@@ -106,33 +123,67 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                       borderColor: 'divider',
                       borderRadius: 1,
                       mb: 1,
-                      p: 1,
                     }}
                   >
-                    <Box sx={{ width: '100%' }}>
+                    <Box sx={{ width: '100%', py: 0.5 }}>
                       <Box
                         sx={{
                           display: 'flex',
                           justifyContent: 'space-between',
-                          alignItems: 'flex-start',
-                          mb: 1,
+                          alignItems: 'center',
+                          mb: 0.5,
                         }}
                       >
-                        <Box sx={{ flexGrow: 1, mr: 1 }}>
-                          <Typography variant="body2" fontWeight="bold" noWrap>
+                        <Box
+                          sx={{
+                            flexGrow: 1,
+                            mr: -1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                          }}
+                        >
+                          <Typography variant="body2" noWrap>
                             {item.product.name}
                           </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {item.product.category}
-                          </Typography>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  item.product.id,
+                                  item.quantity - 1,
+                                )
+                              }
+                              sx={{ p: 0.25 }}
+                            >
+                              <RemoveIcon sx={{ fontSize: 14 }} />
+                            </IconButton>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                mx: 0.5,
+                                minWidth: 16,
+                                textAlign: 'center',
+                                fontSize: '0.75rem',
+                              }}
+                            >
+                              {item.quantity}
+                            </Typography>
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  item.product.id,
+                                  item.quantity + 1,
+                                )
+                              }
+                              sx={{ p: 0.25 }}
+                            >
+                              <AddIcon sx={{ fontSize: 14 }} />
+                            </IconButton>
+                          </Box>
                         </Box>
-                        <IconButton
-                          size="small"
-                          color="error"
-                          onClick={() => onRemoveItem(item.product.id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
                       </Box>
 
                       <Box
@@ -140,68 +191,43 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
+                          mr: 1,
                         }}
                       >
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <IconButton
-                            size="small"
-                            onClick={() =>
-                              handleQuantityChange(
-                                item.product.id,
-                                item.quantity - 1,
-                              )
-                            }
-                          >
-                            <RemoveIcon />
-                          </IconButton>
+                        <Box sx={{ textAlign: 'right' }}>
                           <Typography
-                            variant="body2"
-                            sx={{ mx: 1, minWidth: 20, textAlign: 'center' }}
+                            variant="caption"
+                            fontWeight="bold"
+                            sx={{ display: 'block', fontSize: '0.75rem' }}
                           >
-                            {item.quantity}
+                            VND{' '}
+                            {(
+                              item.product.price * item.quantity
+                            ).toLocaleString()}{' '}
                           </Typography>
-                          <IconButton
-                            size="small"
-                            onClick={() =>
-                              handleQuantityChange(
-                                item.product.id,
-                                item.quantity + 1,
-                              )
-                            }
-                            disabled={item.quantity >= item.product.stock}
-                          >
-                            <AddIcon />
-                          </IconButton>
                         </Box>
-
-                        <Typography
-                          variant="body2"
-                          fontWeight="bold"
-                          color="primary"
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => onRemoveItem(item.product.id)}
+                          sx={{ p: 0.25 }}
                         >
-                          {(
-                            item.product.price * item.quantity
-                          ).toLocaleString()}{' '}
-                          USD
-                        </Typography>
+                          <DeleteIcon sx={{ fontSize: 16 }} />
+                        </IconButton>
                       </Box>
-
-                      <Typography variant="caption" color="text.secondary">
-                        Unit Price: {item.product.price.toLocaleString()} USD
-                      </Typography>
                     </Box>
                   </ListItem>
                 ))}
               </List>
             </Box>
-          </>
-        )}
-        <Divider sx={{ mb: 2 }} />
+          )}
+        </Box>
+        <Divider sx={{ mb: 1.5 }} />
 
         {/* Discount Section */}
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 1.5 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <LocalOfferIcon sx={{ mr: 1, fontSize: 20 }} />
+            <LocalOfferIcon sx={{ mr: 1, fontSize: 18 }} />
             <Typography variant="body2" fontWeight="bold">
               Discount
             </Typography>
@@ -219,6 +245,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
               variant={discountType === 'percent' ? 'contained' : 'outlined'}
               size="small"
               onClick={() => setDiscountType('percent')}
+              sx={{ minWidth: 40 }}
             >
               %
             </Button>
@@ -226,6 +253,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
               variant={discountType === 'amount' ? 'contained' : 'outlined'}
               size="small"
               onClick={() => setDiscountType('amount')}
+              sx={{ minWidth: 50 }}
             >
               USD
             </Button>
@@ -233,8 +261,28 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
         </Box>
 
         {/* Total Section */}
-        <Box sx={{ mb: 2 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+        <Box sx={{ mb: 1.5 }}>
+          {/* Item Count */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              mb: 0.5,
+            }}
+          >
+            <Typography variant="body2">Total Items:</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              {cartItems.reduce((sum, item) => sum + item.quantity, 0)} items
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              mb: 0.5,
+            }}
+          >
             <Typography variant="body2">Subtotal:</Typography>
             <Typography variant="body2">
               {subtotal.toLocaleString()} USD
@@ -246,7 +294,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                mb: 1,
+                mb: 0.5,
               }}
             >
               <Typography variant="body2" color="error">
@@ -258,9 +306,15 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
             </Box>
           )}
 
-          <Divider sx={{ mb: 1 }} />
+          <Divider sx={{ my: 1 }} />
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              mb: 1.5,
+            }}
+          >
             <Typography variant="h6" fontWeight="bold">
               Total:
             </Typography>
