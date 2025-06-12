@@ -108,7 +108,7 @@ const processCheckout = async (
 function SalePage() {
   const {
     cartItems,
-    addToCart,
+
     updateQuantity,
     removeItem,
     clearCart,
@@ -137,10 +137,17 @@ function SalePage() {
   }
 
   return (
-    <Box sx={{ height: 'calc(100vh - 110px)' }}>
-      <Grid container spacing={2} sx={{ height: '100%' }}>
+    <Box
+      sx={{
+        height: 'calc(100vh - 110px)',
+        width: '100vw',
+        overflow: 'hidden',
+        maxWidth: '100%',
+      }}
+    >
+      <Grid container spacing={2} sx={{ height: '100%', width: '100%' }}>
         <Grid size={{ xs: 12, md: 7 }}>
-          <ProductList onAddToCart={addToCart} />
+          <ProductList />
         </Grid>
 
         <Grid
