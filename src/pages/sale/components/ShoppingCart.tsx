@@ -2,7 +2,6 @@ import React from 'react'
 
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
-import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 import RemoveIcon from '@mui/icons-material/Remove'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import Box from '@mui/material/Box'
@@ -13,8 +12,9 @@ import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Paper from '@mui/material/Paper'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+
+import DiscountSection from './DiscountSection'
 
 import type { CartItem } from '../../../types/sale'
 
@@ -224,45 +224,14 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
         </Box>
         <Divider sx={{ mb: 1.5 }} />
 
-        {/* Discount Section */}
-        <Box sx={{ mb: 1.5 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <LocalOfferIcon sx={{ mr: 1, fontSize: 18 }} />
-            <Typography variant="body2" fontWeight="bold">
-              Discount
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <TextField
-              size="small"
-              type="number"
-              value={discount}
-              onChange={(e) => setDiscount(Number(e.target.value) || 0)}
-              inputProps={{ min: 0 }}
-              sx={{ flexGrow: 1 }}
-            />
-            <Button
-              variant={discountType === 'percent' ? 'contained' : 'outlined'}
-              size="small"
-              onClick={() => setDiscountType('percent')}
-              sx={{ minWidth: 40 }}
-            >
-              %
-            </Button>
-            <Button
-              variant={discountType === 'amount' ? 'contained' : 'outlined'}
-              size="small"
-              onClick={() => setDiscountType('amount')}
-              sx={{ minWidth: 50 }}
-            >
-              USD
-            </Button>
-          </Box>
-        </Box>
+        <DiscountSection
+          discount={discount}
+          discountType={discountType}
+          onDiscountChange={setDiscount}
+          onDiscountTypeChange={setDiscountType}
+        />
 
-        {/* Total Section */}
         <Box sx={{ mb: 1.5 }}>
-          {/* Item Count */}
           <Box
             sx={{
               display: 'flex',
@@ -270,9 +239,9 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
               mb: 0.5,
             }}
           >
-            <Typography variant="body2">Total Items:</Typography>
+            <Typography variant="body2">Total Quantity:</Typography>
             <Typography variant="body2" fontWeight="bold">
-              {cartItems.reduce((sum, item) => sum + item.quantity, 0)} items
+              {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
             </Typography>
           </Box>
 
@@ -283,9 +252,9 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
               mb: 0.5,
             }}
           >
-            <Typography variant="body2">Subtotal:</Typography>
+            <Typography variant="body2">Net total:</Typography>
             <Typography variant="body2">
-              {subtotal.toLocaleString()} USD
+              VND {subtotal.toLocaleString()}
             </Typography>
           </Box>
 
@@ -301,7 +270,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                 Discount:
               </Typography>
               <Typography variant="body2" color="error">
-                -{discountAmount.toLocaleString()} USD
+                -{discountAmount.toLocaleString()}
               </Typography>
             </Box>
           )}
@@ -319,7 +288,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
               Total:
             </Typography>
             <Typography variant="h6" fontWeight="bold" color="primary">
-              {total.toLocaleString()} USD
+              {total.toLocaleString()} VND
             </Typography>
           </Box>
         </Box>
