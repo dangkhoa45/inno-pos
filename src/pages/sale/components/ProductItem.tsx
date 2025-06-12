@@ -65,7 +65,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
         >
           <Typography variant="body2" fontWeight="700">
             {product.price > 0
-              ? `VND ${product.price.toLocaleString()} / Cái`
+              ? `VND ${product.price.toLocaleString()}`
               : 'Free'}
           </Typography>
         </Box>
