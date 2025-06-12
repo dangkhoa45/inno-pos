@@ -239,7 +239,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
               mb: 0.5,
             }}
           >
-            <Typography variant="body2">Total Quantity:</Typography>
+            <Typography variant="body2">Total Quantity</Typography>
             <Typography variant="body2" fontWeight="bold">
               {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
             </Typography>
@@ -252,7 +252,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
               mb: 0.5,
             }}
           >
-            <Typography variant="body2">Net total:</Typography>
+            <Typography variant="body2">Net total</Typography>
             <Typography variant="body2">
               VND {subtotal.toLocaleString()}
             </Typography>
@@ -267,7 +267,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
               }}
             >
               <Typography variant="body2" color="error">
-                Discount:
+                Discount
               </Typography>
               <Typography variant="body2" color="error">
                 -{discountAmount.toLocaleString()}
@@ -285,10 +285,10 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
             }}
           >
             <Typography variant="h6" fontWeight="bold">
-              Total:
+              Grand Total
             </Typography>
-            <Typography variant="h6" fontWeight="bold" color="primary">
-              {total.toLocaleString()} VND
+            <Typography variant="h6" fontWeight="bold">
+              VND {total.toLocaleString()}
             </Typography>
           </Box>
         </Box>
