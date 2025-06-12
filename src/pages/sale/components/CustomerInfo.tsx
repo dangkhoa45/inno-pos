@@ -54,17 +54,23 @@ const mockCustomers: Customer[] = [
   },
 ]
 
-const CustomerInfo = () => {
+interface CustomerInfoProps {
+  onCustomerChange?: (customer: Customer | null) => void
+}
+
+const CustomerInfo = ({ onCustomerChange }: CustomerInfoProps) => {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null,
   )
 
   const handleCustomerSelect = (customer: Customer | null) => {
     setSelectedCustomer(customer)
+    onCustomerChange?.(customer)
   }
 
   const handleClearCustomer = () => {
     setSelectedCustomer(null)
+    onCustomerChange?.(null)
   }
 
   const handleCreateNewCustomer = () => {

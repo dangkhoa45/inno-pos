@@ -1,14 +1,18 @@
 import { useState } from 'react'
 
+import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
+import Snackbar from '@mui/material/Snackbar'
+import { useNavigate } from '@tanstack/react-router'
 
-import CustomerInfo from './components/CustomerInfo'
+import CustomerInfo, { type Customer } from './components/CustomerInfo'
 import ProductList from './components/ProductList'
 import ShoppingCart from './components/ShoppingCart'
+import SuccessDialog from '../../components/SuccessDialog'
 
-import type { CartItem, Customer, Product } from '../../types/sale'
+import type { CartItem, Product } from '../../types/sale'
 
 const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
@@ -98,6 +102,7 @@ const processCheckout = async (
 }
 
 function SalePage() {
+  const navigate = useNavigate()
   const {
     cartItems,
     addToCart,
@@ -107,25 +112,63 @@ function SalePage() {
     getTotal,
   } = useCart()
 
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null,
+  )
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false)
+  const [alertOpen, setAlertOpen] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState<'error' | 'warning'>(
+    'error',
+  )
+
+  const handleCustomerChange = (customer: Customer | null) => {
+    setSelectedCustomer(customer)
+  }
+
   const handleCheckout = async () => {
+    // Validate cart không rỗng
     if (cartItems.length === 0) {
-      alert('Cart is empty!')
+      setAlertMessage(
+        'Giỏ hàng trống! Vui lòng thêm sản phẩm trước khi thanh toán.',
+      )
+      setAlertSeverity('warning')
+      setAlertOpen(true)
+      return
+    }
+
+    // Validate bắt buộc phải có customer
+    if (!selectedCustomer) {
+      setAlertMessage('Vui lòng chọn khách hàng trước khi thanh toán!')
+      setAlertSeverity('error')
+      setAlertOpen(true)
       return
     }
 
     try {
-      const result = await processCheckout(null, cartItems, getTotal())
+      const total = getTotal()
+      const result = await processCheckout(selectedCustomer, cartItems, total)
 
       if (result.success) {
         clearCart()
-        alert(result.message)
+        setSuccessDialogOpen(true)
       } else {
-        alert(result.message)
+        setAlertMessage(result.message || 'Thanh toán thất bại!')
+        setAlertSeverity('error')
+        setAlertOpen(true)
       }
     } catch (error) {
       console.error('Checkout error:', error)
-      alert('Payment failed!')
+      setAlertMessage('Có lỗi xảy ra trong quá trình thanh toán!')
+      setAlertSeverity('error')
+      setAlertOpen(true)
     }
+  }
+
+  const handleCloseSuccessDialog = () => {
+    setSuccessDialogOpen(false)
+    // Chuyển sang màn hình thanh toán
+    navigate({ to: '/payment' })
   }
 
   return (
@@ -160,7 +203,7 @@ function SalePage() {
           }}
         >
           <Box sx={{ mb: 2 }}>
-            <CustomerInfo />
+            <CustomerInfo onCustomerChange={handleCustomerChange} />
           </Box>
 
           <Box sx={{ flexGrow: 1, minHeight: 0 }}>
@@ -173,6 +216,27 @@ function SalePage() {
           </Box>
         </Grid>
       </Grid>
+
+      <SuccessDialog
+        open={successDialogOpen}
+        onClose={handleCloseSuccessDialog}
+      />
+
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={6000}
+        onClose={() => setAlertOpen(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setAlertOpen(false)}
+          severity={alertSeverity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   )
 }
