@@ -5,6 +5,7 @@ import Icon from '@mdi/react'
 import Autocomplete from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
 import InputAdornment from '@mui/material/InputAdornment'
+import { useTheme } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
@@ -28,6 +29,8 @@ const DiscountSection: React.FC<DiscountSectionProps> = ({
   onDiscountTypeChange,
   disabled = false,
 }) => {
+  const theme = useTheme()
+
   const handleAutocompleteChange = (
     _event: any,
     value: string | DiscountOption | null,
@@ -94,7 +97,7 @@ const DiscountSection: React.FC<DiscountSectionProps> = ({
                   <Icon
                     path={mdiSaleOutline}
                     size={1}
-                    color="rgba(0, 0, 0, 0.6)"
+                    color={theme.palette.text.secondary}
                   />
                 </InputAdornment>
               ),
@@ -102,18 +105,18 @@ const DiscountSection: React.FC<DiscountSectionProps> = ({
             sx={{
               '& .MuiOutlinedInput-root': {
                 borderRadius: 1,
-                backgroundColor: '#fff',
+                backgroundColor: theme.palette.background.paper,
                 '& fieldset': {
                   borderStyle: 'dashed',
                   borderWidth: '1px',
-                  borderColor: 'rgba(0, 0, 0, 0.23)',
+                  borderColor: theme.palette.divider,
                 },
                 '&:hover fieldset': {
-                  borderColor: '#424242',
+                  borderColor: theme.palette.text.secondary,
                   borderStyle: 'dashed',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#424242',
+                  borderColor: theme.palette.text.secondary,
                   borderStyle: 'dashed',
                   borderWidth: '2px',
                 },

@@ -270,6 +270,14 @@ const lightTheme = createTheme({
         },
       },
     },
+    MuiCssBaseline: {
+      styleOverrides: (theme) => ({
+        body: {
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.text.primary,
+        },
+      }),
+    },
   },
 })
 

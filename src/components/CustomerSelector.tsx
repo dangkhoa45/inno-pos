@@ -5,6 +5,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import Autocomplete from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import { useTheme } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
@@ -28,6 +29,7 @@ const CustomerSelector = ({
   label = 'Search Customer',
   placeholder = 'Search by customer name, phone, email',
 }: CustomerSelectorProps) => {
+  const theme = useTheme()
   const [inputValue, setInputValue] = useState('')
   const [open, setOpen] = useState(false)
 
@@ -64,9 +66,9 @@ const CustomerSelector = ({
               {...restProps}
               sx={{
                 p: 2,
-                borderBottom: '1px solid #f0f0f0',
+                borderBottom: `1px solid ${theme.palette.divider}`,
                 '&:hover': {
-                  backgroundColor: '#f8f9fa',
+                  backgroundColor: theme.palette.action.hover,
                 },
               }}
             >
@@ -84,7 +86,7 @@ const CustomerSelector = ({
                   variant="body2"
                   sx={{
                     fontWeight: 500,
-                    color: '#000',
+                    color: theme.palette.text.primary,
                     mb: 0.5,
                   }}
                 >
@@ -106,9 +108,9 @@ const CustomerSelector = ({
         ListboxProps={{
           sx: {
             p: 0,
-            backgroundColor: '#fff',
+            backgroundColor: theme.palette.background.paper,
             '& .MuiAutocomplete-option[aria-selected="true"]': {
-              backgroundColor: '#e3f2fd !important',
+              backgroundColor: `${theme.palette.primary.light} !important`,
             },
           },
         }}
@@ -116,12 +118,12 @@ const CustomerSelector = ({
           <Box
             {...paperProps}
             sx={{
-              backgroundColor: '#fff',
+              backgroundColor: theme.palette.background.paper,
               zIndex: 99999,
               position: 'fixed',
               mt: 1,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-              border: '1px solid #e0e0e0',
+              boxShadow: theme.shadows[4],
+              border: `1px solid ${theme.palette.divider}`,
               borderRadius: 1,
               width: '100%',
             }}
@@ -131,13 +133,15 @@ const CustomerSelector = ({
               sx={{
                 maxHeight: 300,
                 overflow: 'auto',
-                backgroundColor: '#fff',
+                backgroundColor: theme.palette.background.paper,
               }}
             >
               {children}
             </Box>
             {/* Filter Info */}
-            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+            <Box
+              sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}
+            >
               <Typography variant="body2">
                 Filters applied for{' '}
                 <span style={{ fontWeight: 700 }}>
@@ -147,7 +151,9 @@ const CustomerSelector = ({
             </Box>
 
             {/* Action Buttons */}
-            <Box sx={{ p: 1, borderBottom: '1px solid #e0e0e0' }}>
+            <Box
+              sx={{ p: 1, borderBottom: `1px solid ${theme.palette.divider}` }}
+            >
               <Button
                 variant="text"
                 startIcon={<AddIcon sx={{ fontWeight: 900 }} />}
@@ -155,7 +161,7 @@ const CustomerSelector = ({
                 sx={{
                   textTransform: 'none',
                   minWidth: 'auto',
-                  color: '#000',
+                  color: theme.palette.text.primary,
                   fontSize: '0.875rem',
                   justifyContent: 'flex-start',
                   pl: 1,
@@ -168,7 +174,12 @@ const CustomerSelector = ({
                 Create a new Customer
               </Button>
             </Box>
-            <Box sx={{ p: 1, borderBottom: '1px solid #e0e0e0' }}>
+            <Box
+              sx={{
+                p: 1,
+                borderBottom: `1px solid ${theme.palette.divider}`,
+              }}
+            >
               {onAdvancedSearch && (
                 <Button
                   variant="text"
@@ -178,7 +189,7 @@ const CustomerSelector = ({
                   sx={{
                     textTransform: 'none',
                     minWidth: 'auto',
-                    color: '#000',
+                    color: theme.palette.text.primary,
                     fontSize: '0.875rem',
                     justifyContent: 'flex-start',
                     pl: 1,

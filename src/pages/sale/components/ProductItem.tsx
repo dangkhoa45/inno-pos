@@ -5,7 +5,10 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import Chip from '@mui/material/Chip'
+import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+
+import { getColorWithOpacity } from '../../../theme/theme'
 
 import type { Product } from '../../../types/sale'
 
@@ -20,6 +23,8 @@ const ProductItem: React.FC<ProductItemProps> = ({
   onAddToCart,
   isInCart,
 }) => {
+  const theme = useTheme()
+
   const handleAddToCart = () => {
     onAddToCart(product)
   }
@@ -37,11 +42,17 @@ const ProductItem: React.FC<ProductItemProps> = ({
         cursor: 'pointer',
         transition: 'all 0.2s ease-in-out',
         opacity: product.stock <= 0 ? 0.8 : 1,
-        border: isInCart ? '2px solid #1976d2' : '1px solid',
-        borderColor: isInCart ? '#1976d2' : 'divider',
-        boxShadow: isInCart ? '0 0 0 1px rgba(25, 118, 210, 0.2)' : 'none',
+        border: isInCart
+          ? `2px solid ${theme.palette.primary.main}`
+          : '1px solid',
+        borderColor: isInCart ? theme.palette.primary.main : 'divider',
+        boxShadow: isInCart
+          ? `0 0 0 1px ${getColorWithOpacity(theme.palette.primary.main, 0.2)}`
+          : 'none',
         '&:hover': {
-          boxShadow: isInCart ? '0 4px 20px 0 rgba(25, 118, 210, 0.3)' : 3,
+          boxShadow: isInCart
+            ? `0 4px 20px 0 ${getColorWithOpacity(theme.palette.primary.main, 0.3)}`
+            : 3,
           transform: 'translateY(-2px)',
         },
         '&:active': {
@@ -59,16 +70,16 @@ const ProductItem: React.FC<ProductItemProps> = ({
           zIndex: 1,
           backgroundColor:
             product.stock > 0
-              ? '#c8e6c9'
+              ? theme.palette.success.light
               : product.stock === 0
-                ? '#fff3cd'
-                : '#ffcdd2',
+                ? theme.palette.warning.light
+                : theme.palette.error.light,
           color:
             product.stock > 0
-              ? '#2e7d32'
+              ? theme.palette.success.dark
               : product.stock === 0
-                ? '#856404'
-                : '#b71c1c',
+                ? theme.palette.warning.dark
+                : theme.palette.error.dark,
           fontWeight: '700',
         }}
       />
@@ -76,7 +87,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
         component="div"
         sx={{
           height: 120,
-          backgroundColor: '#f5f5f5',
+          backgroundColor: theme.palette.grey[100],
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

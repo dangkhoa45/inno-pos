@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
+import { useTheme } from '@mui/material/styles'
 
 import ProductItem from './ProductItem'
 import ProductListHeader from './ProductListHeader'
@@ -25,6 +26,7 @@ interface ProductListProps {
 }
 
 const ProductList = ({ onAddToCart, cartItems }: ProductListProps) => {
+  const theme = useTheme()
   const [filteredProducts, setFilteredProducts] =
     useState<Product[]>(mockProducts)
 
@@ -66,10 +68,10 @@ const ProductList = ({ onAddToCart, cartItems }: ProductListProps) => {
             width: '8px',
           },
           '&::-webkit-scrollbar-track': {
-            background: '#f1f1f1',
+            background: theme.palette.grey[100],
           },
           '&::-webkit-scrollbar-thumb': {
-            background: '#616161',
+            background: theme.palette.grey[600],
             borderRadius: 1,
           },
         }}
