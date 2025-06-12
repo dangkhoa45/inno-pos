@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 
 import CustomerInfo from './components/CustomerInfo'
@@ -137,15 +138,23 @@ function SalePage() {
   }
 
   return (
-    <Box
+    <Container
+      maxWidth={false}
+      disableGutters
       sx={{
         height: 'calc(100vh - 110px)',
-        width: '100vw',
+        width: '100%',
         overflow: 'hidden',
-        maxWidth: '100%',
       }}
     >
-      <Grid container spacing={2} sx={{ height: '100%', width: '100%' }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          height: '100%',
+          width: '100%',
+        }}
+      >
         <Grid size={{ xs: 12, md: 7 }}>
           <ProductList />
         </Grid>
@@ -173,7 +182,7 @@ function SalePage() {
           </Box>
         </Grid>
       </Grid>
-    </Box>
+    </Container>
   )
 }
 

@@ -10,12 +10,10 @@ const ProductList = () => {
     <Paper
       elevation={0}
       sx={{
-        height: '100%',
+        height: 'calc(100vh - 110px)',
         width: '100%',
         border: 1,
         borderColor: 'divider',
-        display: 'flex',
-        flexDirection: 'column',
       }}
     >
       <Box
