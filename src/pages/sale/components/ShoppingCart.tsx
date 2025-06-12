@@ -36,6 +36,13 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
     'percent',
   )
 
+  React.useEffect(() => {
+    if (cartItems.length === 0) {
+      setDiscount(0)
+      setDiscountType('percent')
+    }
+  }, [cartItems.length])
+
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0,
@@ -229,6 +236,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
           discountType={discountType}
           onDiscountChange={setDiscount}
           onDiscountTypeChange={setDiscountType}
+          disabled={cartItems.length === 0}
         />
 
         <Box sx={{ mb: 1.5 }}>
