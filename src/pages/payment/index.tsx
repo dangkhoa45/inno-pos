@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
@@ -10,10 +10,9 @@ import { useOrder } from '../../stores/OrderContext'
 
 export default function Payment() {
   const navigate = useNavigate()
-  const { orderData, clearOrderData } = useOrder()
+  const { orderData, clearOrderData, setOrderData } = useOrder()
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('')
 
-  // Redirect về sale page nếu không có orderData
   useEffect(() => {
     if (!orderData) {
       console.log('Không có dữ liệu đơn hàng, chuyển hướng về trang bán hàng')
@@ -23,6 +22,37 @@ export default function Payment() {
 
   const handlePaymentMethodChange = (method: string) => {
     setSelectedPaymentMethod(method)
+  }
+
+  const handleRemoveItem = (productId: string) => {
+    if (!orderData) return
+
+    const updatedCartItems = orderData.cartItems.filter(
+      (item) => item.product.id !== productId,
+    )
+
+    const newTotalAmount = updatedCartItems.reduce(
+      (sum, item) => sum + item.product.price * item.quantity,
+      0,
+    )
+    const newTotalQuantity = updatedCartItems.reduce(
+      (sum, item) => sum + item.quantity,
+      0,
+    )
+
+    const updatedOrderData = {
+      ...orderData,
+      cartItems: updatedCartItems,
+      totalAmount: newTotalAmount,
+      totalQuantity: newTotalQuantity,
+    }
+
+    setOrderData(updatedOrderData)
+
+    if (updatedCartItems.length === 0) {
+      clearOrderData()
+      navigate({ to: '/sale' })
+    }
   }
 
   const handleCompleteOrder = async () => {
@@ -46,15 +76,12 @@ export default function Payment() {
         timestamp: new Date().toISOString(),
       })
 
-      // Mock API call để xử lý payment
       await new Promise((resolve) => setTimeout(resolve, 2000))
 
-      // Clear order data sau khi hoàn tất
       clearOrderData()
 
       alert('Thanh toán thành công!')
 
-      // Quay về trang chủ hoặc trang sale
       navigate({ to: '/sale' })
     } catch (error) {
       console.error('Payment error:', error)
@@ -81,7 +108,7 @@ export default function Payment() {
         }}
       >
         <Grid size={{ xs: 12, md: 7 }}>
-          <OrderSummary orderData={orderData} />
+          <OrderSummary orderData={orderData} onRemoveItem={handleRemoveItem} />
         </Grid>
 
         <Grid

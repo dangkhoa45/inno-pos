@@ -1,33 +1,46 @@
 import React from 'react'
 
+import DeleteIcon from '@mui/icons-material/Delete'
+import PersonIcon from '@mui/icons-material/Person'
+import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Chip from '@mui/material/Chip'
+import CardContent from '@mui/material/CardContent'
 import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
 import Paper from '@mui/material/Paper'
 import { useTheme } from '@mui/material/styles'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 
-import { mockOrderData, mockCustomerData } from '../../../mockup'
+import { mockCustomerData, mockOrderData } from '../../../mockup'
+import DiscountSection from '../../sale/components/DiscountSection'
 
 import type { OrderData } from '../../../stores/OrderContext'
 
 interface OrderSummaryProps {
   orderData: OrderData | null
+  onRemoveItem?: (productId: string) => void
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ orderData }) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({
+  orderData,
+  onRemoveItem,
+}) => {
   const theme = useTheme()
+  const [discount, setDiscount] = React.useState(0)
+  const [discountType, setDiscountType] = React.useState<'percent' | 'amount'>(
+    'percent',
+  )
 
-  // Debug log để kiểm tra dữ liệu
   console.log('OrderSummary received orderData:', orderData)
 
-  // Sử dụng dữ liệu thực nếu có, otherwise fallback to mock data
+  const handleRemoveItem = (productId: string) => {
+    if (onRemoveItem) {
+      onRemoveItem(productId)
+    }
+  }
+
   const displayData = orderData || {
     customer: null,
     cartItems: mockOrderData.items.map((item) => ({
@@ -49,12 +62,29 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ orderData }) => {
     timestamp: new Date().toISOString(),
   }
 
+  // Use real data calculations when orderData is available
+  const subtotal = orderData
+    ? orderData.cartItems.reduce(
+        (sum, item) => sum + item.product.price * item.quantity,
+        0,
+      )
+    : displayData.totalAmount
+
+  const totalQuantity = orderData
+    ? orderData.cartItems.reduce((sum, item) => sum + item.quantity, 0)
+    : displayData.totalQuantity
+
   const customer = displayData.customer || {
     id: mockCustomerData.id,
     name: mockCustomerData.name,
     phone: mockCustomerData.phone,
     email: mockCustomerData.email,
   }
+
+  // Calculate discount amount and final total
+  const discountAmount =
+    discountType === 'percent' ? (subtotal * discount) / 100 : discount
+  const grandTotal = Math.max(0, subtotal - discountAmount)
 
   return (
     <Paper
@@ -68,144 +98,219 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ orderData }) => {
         borderColor: 'divider',
       }}
     >
-      <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-          <Typography variant="body2" fontWeight="bold">
-            C
-          </Typography>
-          <Box>
-            <Typography variant="body2" fontWeight="bold">
-              {customer.name || displayData.orderId}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {customer.phone}
-            </Typography>
+      <CardContent
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          p: 2,
+          '&:last-child': { pb: 2 },
+        }}
+      >
+        {/* Customer Info Section */}
+        <Box sx={{ mb: 2, pb: 2, borderBottom: 1, borderColor: 'divider' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Avatar sx={{ width: 48, height: 48 }}>
+              <PersonIcon />
+            </Avatar>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h6" component="div">
+                {customer.name || displayData.orderId}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {customer.phone}
+              </Typography>
+            </Box>
           </Box>
         </Box>
-      </Box>
 
-      {/* Item Cart Section */}
-      <Box sx={{ p: 2 }}>
-        <Typography variant="body1" fontWeight="bold" mb={2}>
+        {/* Item Cart Header */}
+        <Typography variant="body1" fontWeight="bold" mb={1}>
           Item Cart
         </Typography>
 
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Item</TableCell>
-              <TableCell align="center">Quantity</TableCell>
-              <TableCell align="right">Unit Price</TableCell>
-              <TableCell align="right">Amount</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {displayData.cartItems.map((item) => (
-              <TableRow key={item.product.id}>
-                <TableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        {/* Items List */}
+        <Box sx={{ overflow: 'auto', flexGrow: 1, height: 280, mx: -1, px: 1 }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              overflow: 'auto',
+              mb: 2,
+              '&::-webkit-scrollbar': {
+                width: '8px',
+              },
+              '&::-webkit-scrollbar-track': {
+                background: theme.palette.grey[100],
+              },
+              '&::-webkit-scrollbar-thumb': {
+                background: theme.palette.grey[600],
+                borderRadius: 1,
+              },
+            }}
+          >
+            <List dense disablePadding>
+              {displayData.cartItems.map((item) => (
+                <ListItem
+                  key={item.product.id}
+                  sx={{
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    borderRadius: 1,
+                    mb: 1,
+                  }}
+                >
+                  <Box sx={{ width: '100%', py: 0.5 }}>
                     <Box
                       sx={{
-                        width: 40,
-                        height: 40,
-                        backgroundColor: theme.palette.grey[200],
-                        borderRadius: 1,
                         display: 'flex',
+                        justifyContent: 'space-between',
                         alignItems: 'center',
-                        justifyContent: 'center',
+                        mb: 0.5,
                       }}
                     >
-                      <Typography variant="caption" color="text.secondary">
-                        IMG
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="body2" fontWeight="500">
+                      <Typography variant="body2" noWrap>
                         {item.product.name}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        ItemCode: {item.product.itemCode || 'N/A'}
-                      </Typography>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 0.5,
+                        }}
+                      >
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            minWidth: 16,
+                            textAlign: 'center',
+                            fontSize: '0.75rem',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          x{item.quantity}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Box>
+                        <Typography variant="caption" fontWeight={'bold'}>
+                          VND {item.product.price.toLocaleString()}
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <Typography
+                          variant="caption"
+                          fontWeight="bold"
+                          sx={{ fontSize: '0.75rem' }}
+                        >
+                          VND{' '}
+                          {(
+                            item.product.price * item.quantity
+                          ).toLocaleString()}
+                        </Typography>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          sx={{ p: 0.25 }}
+                          onClick={() => handleRemoveItem(item.product.id)}
+                        >
+                          <DeleteIcon sx={{ fontSize: 16 }} />
+                        </IconButton>
+                      </Box>
                     </Box>
                   </Box>
-                </TableCell>
-                <TableCell align="center">
-                  <Chip
-                    label={`${item.quantity} Cái`}
-                    size="small"
-                    variant="outlined"
-                  />
-                </TableCell>
-                <TableCell align="right">
-                  <Typography variant="body2">
-                    VND {item.product.price.toLocaleString()}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography variant="body2" fontWeight="bold">
-                    VND {(item.product.price * item.quantity).toLocaleString()}
-                  </Typography>
-                  <Button
-                    size="small"
-                    color="error"
-                    sx={{ minWidth: 'auto', p: 0.5 }}
-                  >
-                    🗑
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Box>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Box>
 
-      {/* Discount Section */}
-      <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
-        <Button
-          variant="outlined"
-          startIcon="⚙"
-          sx={{
-            width: '100%',
-            borderStyle: 'dashed',
-            color: 'text.secondary',
-            borderColor: 'grey.300',
-          }}
-        >
-          Add Discount
-        </Button>
-      </Box>
+        <Divider sx={{ mb: 1.5 }} />
 
-      {/* Summary */}
-      <Box sx={{ p: 2, mt: 'auto', borderTop: 1, borderColor: 'divider' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-          <Typography variant="body2">Total Quantity</Typography>
-          <Typography variant="body2" fontWeight="bold">
-            {displayData.totalQuantity}
-          </Typography>
+        {/* Discount Section */}
+        <DiscountSection
+          discount={discount}
+          discountType={discountType}
+          onDiscountChange={setDiscount}
+          onDiscountTypeChange={setDiscountType}
+          disabled={displayData.cartItems.length === 0}
+        />
+
+        {/* Summary Section */}
+        <Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              mb: 0.5,
+            }}
+          >
+            <Typography variant="body2">Total Quantity</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              {totalQuantity}
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              mb: 0.5,
+            }}
+          >
+            <Typography variant="body2">Net total</Typography>
+            <Typography variant="body2">
+              VND {subtotal.toLocaleString()}
+            </Typography>
+          </Box>
+
+          {discountAmount > 0 && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                mb: 0.5,
+              }}
+            >
+              <Typography variant="body2" color="error">
+                Discount
+              </Typography>
+              <Typography variant="body2" color="error">
+                -VND {discountAmount.toLocaleString()}
+              </Typography>
+            </Box>
+          )}
+
+          <Divider sx={{ my: 1 }} />
+
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold">
+              Grand Total
+            </Typography>
+            <Typography variant="h6" fontWeight="bold">
+              VND {grandTotal.toLocaleString()}
+            </Typography>
+          </Box>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-          <Typography variant="body2">Net Total</Typography>
-          <Typography variant="body2">
-            VND {displayData.totalAmount.toLocaleString()}
-          </Typography>
-        </Box>
-        <Divider sx={{ my: 1 }} />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-          <Typography variant="h6" fontWeight="bold">
-            Grand Total
-          </Typography>
-          <Typography variant="h6" fontWeight="bold">
-            VND {displayData.totalAmount.toLocaleString()}
-          </Typography>
-        </Box>
-        <Button
-          variant="outlined"
-          fullWidth
-          sx={{ borderStyle: 'dashed', color: 'primary.main' }}
-        >
-          Edit Cart
-        </Button>
-      </Box>
+      </CardContent>
     </Paper>
   )
 }
