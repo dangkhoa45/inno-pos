@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography'
 import {
   mockDiscountOptions,
   type DiscountOption,
-} from '../mockup/data-discount'
+} from '../../../mockup/data-discount'
 
 interface DiscountSectionProps {
   discount: number

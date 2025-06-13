@@ -16,7 +16,7 @@ import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
-import { mockProducts } from '../mockup/data-product'
+import { mockProducts } from '../../../mockup/data-product'
 
 import type { Product } from '../../../types/sale'
 

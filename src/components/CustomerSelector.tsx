@@ -9,7 +9,7 @@ import { useTheme } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
-import type { Customer } from '@/pages/sale/components/CustomerInfo'
+import type { Customer } from '../mockup'
 
 interface CustomerSelectorProps {
   customers: Customer[]

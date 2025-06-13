@@ -7,7 +7,7 @@ import { useTheme } from '@mui/material/styles'
 
 import ProductItem from './ProductItem'
 import ProductListHeader from './ProductListHeader'
-import { mockProducts } from '../mockup/data-product'
+import { mockProducts } from '../../../mockup/data-product'
 
 import type { Product, CartItem } from '../../../types/sale'
 

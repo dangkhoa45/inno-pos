@@ -15,6 +15,7 @@ import { Outlet } from '@tanstack/react-router'
 import { Navigation } from '@/components/Navigation'
 import { LoginForm } from '@/pages/login'
 import { AuthProvider, useAuth } from '@/stores/AuthContext'
+import { OrderProvider } from '@/stores/OrderContext'
 import { ThemeProvider } from '@/theme'
 
 function RootLayoutInner() {
@@ -109,7 +110,9 @@ export default function Root() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <RootLayoutInner />
+        <OrderProvider>
+          <RootLayoutInner />
+        </OrderProvider>
       </AuthProvider>
     </ThemeProvider>
   )

@@ -9,50 +9,7 @@ import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 
 import CustomerSelector from '../../../components/CustomerSelector'
-
-export type Customer = {
-  id: string
-  customerCode: string
-  name: string
-  phone: string
-  email?: string
-  address?: string
-  avatar?: string
-  type?: string
-}
-
-const mockCustomers: Customer[] = [
-  {
-    id: '1',
-    customerCode: 'CUST-2025-05595',
-    name: 'John Smith',
-    phone: '0901234567',
-    email: 'johnsmith@email.com',
-    address: 'Vietnam',
-    avatar: '',
-    type: 'individual',
-  },
-  {
-    id: '2',
-    customerCode: 'CUST-2025-05596',
-    name: 'Jane Doe',
-    phone: '0907654321',
-    email: 'janedoe@email.com',
-    address: 'Vietnam',
-    avatar: '',
-    type: 'individual',
-  },
-  {
-    id: '3',
-    customerCode: 'CUST-2025-05597',
-    name: 'Michael Johnson',
-    phone: '0912345678',
-    email: 'michaeljohnson@email.com',
-    address: 'Vietnam',
-    avatar: '',
-    type: 'individual',
-  },
-]
+import { mockCustomers, type Customer } from '../../../mockup'
 
 interface CustomerInfoProps {
   onCustomerChange?: (customer: Customer | null) => void

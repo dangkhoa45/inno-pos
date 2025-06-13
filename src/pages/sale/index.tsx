@@ -7,12 +7,13 @@ import Grid from '@mui/material/Grid'
 import Snackbar from '@mui/material/Snackbar'
 import { useNavigate } from '@tanstack/react-router'
 
-import CustomerInfo, { type Customer } from './components/CustomerInfo'
+import CustomerInfo from './components/CustomerInfo'
 import ProductList from './components/ProductList'
 import ShoppingCart from './components/ShoppingCart'
 import SuccessDialog from '../../components/SuccessDialog'
+import { useOrder } from '../../stores/OrderContext'
 
-import type { CartItem, Product } from '../../types/sale'
+import type { CartItem, Customer, Product } from '../../types/sale'
 
 const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
@@ -103,6 +104,7 @@ const processCheckout = async (
 
 function SalePage() {
   const navigate = useNavigate()
+  const { setOrderData } = useOrder()
   const {
     cartItems,
     addToCart,
@@ -110,6 +112,7 @@ function SalePage() {
     removeItem,
     clearCart,
     getTotal,
+    getTotalItems,
   } = useCart()
 
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
@@ -147,6 +150,21 @@ function SalePage() {
 
     try {
       const total = getTotal()
+      const totalQuantity = getTotalItems()
+
+      // Lưu dữ liệu order vào context trước khi checkout
+      const orderData = {
+        customer: selectedCustomer,
+        cartItems,
+        totalAmount: total,
+        totalQuantity,
+        orderId: `ORD-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+      }
+
+      console.log('Sale page - Saving orderData to context:', orderData)
+      setOrderData(orderData)
+
       const result = await processCheckout(selectedCustomer, cartItems, total)
 
       if (result.success) {
