@@ -77,15 +77,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     const cleanValue = value.replace(/[^\d.]/g, '')
 
     const parts = cleanValue.split('.')
-    if (parts.length > 2) {
-      return formatMoney(parts[0] + '.' + parts.slice(1).join(''))
-    }
 
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-
-    if (parts[1] && parts[1].length > 2) {
-      parts[1] = parts[1].substring(0, 2)
-    }
 
     return parts.join('.')
   }
@@ -107,11 +100,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   }
 
   const handleSplitPaymentChange = (index: number, value: string) => {
-    const cleanValue = parseMoney(value)
-
-    if (cleanValue === '' || /^\d*\.?\d*$/.test(cleanValue)) {
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
       const updatedSplitPayments = [...splitPayments]
-      updatedSplitPayments[index].amount = cleanValue
+      updatedSplitPayments[index].amount = value
       setSplitPayments(updatedSplitPayments)
     }
   }
@@ -177,6 +168,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           p: 2,
           border: 1,
           borderColor: 'divider',
+          overflowY: 'auto',
         }}
       >
         <Typography variant="body1" fontWeight="bold" mb={2}>
@@ -243,29 +235,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
                 }}
                 sx={{ mb: 2 }}
               />
-
-              {/* Quick Amount Buttons */}
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={() => setPaidAmount(grandTotal.toString())}
-                  sx={{ fontSize: '0.75rem' }}
-                >
-                  Exact Amount
-                </Button>
-                {[100000, 200000, 500000, 1000000].map((amount) => (
-                  <Button
-                    key={amount}
-                    size="small"
-                    variant="outlined"
-                    onClick={() => setPaidAmount(amount.toString())}
-                    sx={{ fontSize: '0.75rem' }}
-                  >
-                    {amount.toLocaleString()}
-                  </Button>
-                ))}
-              </Box>
 
               {/* Change Display */}
               {paidAmount && changeAmount >= 0 && (
@@ -342,7 +311,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
                       size="small"
                       variant="outlined"
                       placeholder="Enter amount"
-                      value={formatMoney(payment.amount)}
+                      value={payment.amount}
                       onChange={(e) =>
                         handleSplitPaymentChange(index, e.target.value)
                       }
@@ -362,50 +331,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
                     >
                       ✕
                     </Button>
-                  </Box>
-
-                  {/* Quick amount buttons for split payments */}
-                  <Box
-                    sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 1 }}
-                  >
-                    <Button
-                      size="small"
-                      variant="text"
-                      onClick={() => {
-                        const remainingAmount =
-                          grandTotal -
-                          splitPayments.reduce(
-                            (sum, p, i) =>
-                              i !== index
-                                ? sum + (parseFloat(p.amount) || 0)
-                                : sum,
-                            0,
-                          )
-                        if (remainingAmount > 0) {
-                          const updated = [...splitPayments]
-                          updated[index].amount = remainingAmount.toString()
-                          setSplitPayments(updated)
-                        }
-                      }}
-                      sx={{ fontSize: '0.7rem', minWidth: 'auto', px: 1 }}
-                    >
-                      Remaining
-                    </Button>
-                    {[50000, 100000, 200000, 500000].map((amount) => (
-                      <Button
-                        key={amount}
-                        size="small"
-                        variant="text"
-                        onClick={() => {
-                          const updated = [...splitPayments]
-                          updated[index].amount = amount.toString()
-                          setSplitPayments(updated)
-                        }}
-                        sx={{ fontSize: '0.7rem', minWidth: 'auto', px: 1 }}
-                      >
-                        {(amount / 1000).toFixed(0)}k
-                      </Button>
-                    ))}
                   </Box>
                 </Box>
               ))}

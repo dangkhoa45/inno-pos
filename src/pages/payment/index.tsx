@@ -107,12 +107,12 @@ export default function Payment() {
           width: '100%',
         }}
       >
-        <Grid size={{ xs: 12, md: 7 }}>
+        <Grid size={{ xs: 12, md: 5 }}>
           <OrderSummary orderData={orderData} onRemoveItem={handleRemoveItem} />
         </Grid>
 
         <Grid
-          size={{ xs: 12, md: 5 }}
+          size={{ xs: 12, md: 7 }}
           sx={{
             display: 'flex',
             flexDirection: 'column',
