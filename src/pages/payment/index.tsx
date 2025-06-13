@@ -121,6 +121,7 @@ export default function Payment() {
           }}
         >
           <PaymentForm
+            orderData={orderData}
             selectedPaymentMethod={selectedPaymentMethod}
             onPaymentMethodChange={handlePaymentMethodChange}
             onCompleteOrder={handleCompleteOrder}

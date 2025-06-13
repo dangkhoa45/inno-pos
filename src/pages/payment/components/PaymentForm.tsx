@@ -2,25 +2,28 @@ import React from 'react'
 
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Chip from '@mui/material/Chip'
 import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 import QRCode from '../../../components/QRCode'
-import { mockPaymentAmounts, mockOrderData } from '../../../mockup'
+
+import type { OrderData } from '../../../stores/OrderContext'
 
 interface PaymentFormProps {
+  orderData: OrderData | null
   selectedPaymentMethod: string
   onPaymentMethodChange: (method: string) => void
   onCompleteOrder: () => void
 }
 
 const PaymentForm: React.FC<PaymentFormProps> = ({
-  selectedPaymentMethod,
-  onPaymentMethodChange,
+  orderData,
   onCompleteOrder,
 }) => {
+  const grandTotal = orderData?.totalAmount || 0
+  const orderId = orderData?.orderId || 'ORDER-001'
+
   return (
     <Box
       sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}
@@ -37,29 +40,15 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         <Typography variant="body1" fontWeight="bold" mb={2}>
           Payment Method
         </Typography>
-
-        <TextField
-          fullWidth
-          label="Tiền mặt"
-          variant="outlined"
-          defaultValue={`VND ${mockOrderData.grandTotal.toLocaleString()}`}
-          sx={{ mb: 2 }}
-        />
-
-        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-          {mockPaymentAmounts.map((amount) => (
-            <Chip
-              key={amount}
-              label={`VND ${amount.toLocaleString()}`}
-              variant={
-                selectedPaymentMethod === amount.toString()
-                  ? 'filled'
-                  : 'outlined'
-              }
-              onClick={() => onPaymentMethodChange(amount.toString())}
-              sx={{ cursor: 'pointer' }}
-            />
-          ))}
+        <Box sx={{ border: 2, borderRadius: 1, borderColor: 'divider', p: 2 }}>
+          <Typography variant="body2" sx={{ mb: 0.5 }}>
+            Cash
+          </Typography>
+          <TextField
+            fullWidth
+            variant="outlined"
+            defaultValue={`VND ${grandTotal.toLocaleString()}`}
+          />
         </Box>
       </Paper>
 
@@ -92,7 +81,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         >
           {/* QR Code Component */}
           <QRCode
-            value={`payment:${mockOrderData.id}:${mockOrderData.grandTotal}`}
+            value={`payment:${orderId}:${grandTotal}`}
             size={150}
             showText={true}
           />
@@ -103,19 +92,13 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
             <Typography variant="body2">Grand Total</Typography>
             <Typography variant="body2" fontWeight="bold">
-              VND {mockOrderData.grandTotal.toLocaleString()}
+              VND {grandTotal.toLocaleString()}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
             <Typography variant="body2">Paid Amount</Typography>
             <Typography variant="body2" fontWeight="bold">
-              VND {mockOrderData.grandTotal.toLocaleString()}
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-            <Typography variant="body2">Change Amount</Typography>
-            <Typography variant="body2" fontWeight="bold">
-              VND 0
+              VND {grandTotal.toLocaleString()}
             </Typography>
           </Box>
 
@@ -125,6 +108,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
             size="large"
             onClick={onCompleteOrder}
             sx={{
+              mt: 1,
               py: 1.5,
               fontSize: '1.1rem',
               fontWeight: 'bold',
