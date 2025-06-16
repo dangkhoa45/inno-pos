@@ -6,12 +6,20 @@ import { useNavigate } from '@tanstack/react-router'
 
 import OrderSummary from './components/OrderSummary'
 import PaymentForm from './components/PaymentForm'
+import ReceiptDialog from '../../components/ReceiptDialog'
 import { useOrder } from '../../stores/OrderContext'
 
 export default function Payment() {
   const navigate = useNavigate()
   const { orderData, clearOrderData, setOrderData } = useOrder()
   const [isProcessing, setIsProcessing] = useState(false)
+  const [showReceipt, setShowReceipt] = useState(false)
+  const [completedPaymentData, setCompletedPaymentData] = useState<{
+    paymentMethod: string
+    totalPaid: number
+    changeAmount: number
+    splitPayments?: Array<{ method: string; amount: string }>
+  } | null>(null)
 
   useEffect(() => {
     if (!orderData) {
@@ -97,11 +105,11 @@ export default function Payment() {
 
       console.log('Payment completed successfully:', paymentRecord)
 
-      clearOrderData()
+      // Store payment data for receipt
+      setCompletedPaymentData(paymentData)
 
-      alert('Payment completed successfully!')
-
-      navigate({ to: '/sale' })
+      // Show receipt dialog instead of alert
+      setShowReceipt(true)
     } catch (error) {
       console.error('Payment error:', error)
       alert('An error occurred during payment processing!')
@@ -109,6 +117,13 @@ export default function Payment() {
       // Clear loading state
       setIsProcessing(false)
     }
+  }
+
+  const handleCloseReceipt = () => {
+    setShowReceipt(false)
+    setCompletedPaymentData(null)
+    clearOrderData()
+    navigate({ to: '/sale' })
   }
 
   return (
@@ -149,6 +164,16 @@ export default function Payment() {
           />
         </Grid>
       </Grid>
+
+      {/* Receipt Dialog */}
+      {completedPaymentData && (
+        <ReceiptDialog
+          open={showReceipt}
+          onClose={handleCloseReceipt}
+          orderData={orderData}
+          paymentData={completedPaymentData}
+        />
+      )}
     </Container>
   )
 }
