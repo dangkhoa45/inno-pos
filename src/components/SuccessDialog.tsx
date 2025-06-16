@@ -48,17 +48,17 @@ const SuccessDialog: React.FC<SuccessDialogProps> = ({
           }}
         />
         <Typography variant="h5" fontWeight="bold" color="success.main" mb={1}>
-          Đặt hàng thành công!
+          Order Successful!
         </Typography>
       </DialogTitle>
 
       <DialogContent sx={{ textAlign: 'center', py: 2 }}>
         <Typography variant="body1" fontWeight="bold">
-          Đơn hàng đã được lưu thành công
+          Order has been saved successfully
         </Typography>
 
         <Typography variant="body2" color="primary.main" fontWeight="bold">
-          Mã đơn hàng: {orderId}
+          Order ID: {orderId}
         </Typography>
       </DialogContent>
 
@@ -72,7 +72,7 @@ const SuccessDialog: React.FC<SuccessDialogProps> = ({
             borderRadius: 2,
           }}
         >
-          Đóng
+          Close
         </Button>
       </DialogActions>
     </Dialog>

@@ -11,18 +11,14 @@ import { useOrder } from '../../stores/OrderContext'
 export default function Payment() {
   const navigate = useNavigate()
   const { orderData, clearOrderData, setOrderData } = useOrder()
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('')
+  const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
     if (!orderData) {
-      console.log('Không có dữ liệu đơn hàng, chuyển hướng về trang bán hàng')
+      console.log('No order data found, redirecting to sale page')
       navigate({ to: '/sale' })
     }
   }, [orderData, navigate])
-
-  const handlePaymentMethodChange = (method: string) => {
-    setSelectedPaymentMethod(method)
-  }
 
   const handleRemoveItem = (productId: string) => {
     if (!orderData) return
@@ -55,37 +51,63 @@ export default function Payment() {
     }
   }
 
-  const handleCompleteOrder = async () => {
-    if (!selectedPaymentMethod) {
-      alert('Vui lòng chọn phương thức thanh toán!')
+  const handleCompleteOrder = async (paymentData: {
+    paymentMethod: string
+    totalPaid: number
+    changeAmount: number
+    splitPayments?: Array<{ method: string; amount: string }>
+  }) => {
+    if (!orderData) {
+      alert('No order data available!')
       return
     }
 
-    if (!orderData) {
-      alert('Không có dữ liệu đơn hàng!')
-      return
-    }
+    // Set loading state
+    setIsProcessing(true)
 
     try {
       console.log('Processing final payment:', {
         orderId: orderData.orderId,
-        paymentMethod: selectedPaymentMethod,
+        paymentMethod: paymentData.paymentMethod,
         totalAmount: orderData.totalAmount,
+        totalPaid: paymentData.totalPaid,
+        changeAmount: paymentData.changeAmount,
         customer: orderData.customer,
         items: orderData.cartItems,
+        splitPayments: paymentData.splitPayments,
         timestamp: new Date().toISOString(),
       })
 
+      // Simulate API call - replace with actual payment processing
       await new Promise((resolve) => setTimeout(resolve, 2000))
+
+      // Save payment record (in real app, this would be API call)
+      const paymentRecord = {
+        orderId: orderData.orderId,
+        customerId: orderData.customer?.id,
+        customerName: orderData.customer?.name,
+        totalAmount: orderData.totalAmount,
+        paidAmount: paymentData.totalPaid,
+        changeAmount: paymentData.changeAmount,
+        paymentMethod: paymentData.paymentMethod,
+        splitPayments: paymentData.splitPayments,
+        status: 'completed',
+        completedAt: new Date().toISOString(),
+      }
+
+      console.log('Payment completed successfully:', paymentRecord)
 
       clearOrderData()
 
-      alert('Thanh toán thành công!')
+      alert('Payment completed successfully!')
 
       navigate({ to: '/sale' })
     } catch (error) {
       console.error('Payment error:', error)
-      alert('Có lỗi xảy ra trong quá trình thanh toán!')
+      alert('An error occurred during payment processing!')
+    } finally {
+      // Clear loading state
+      setIsProcessing(false)
     }
   }
 
@@ -122,8 +144,7 @@ export default function Payment() {
         >
           <PaymentForm
             orderData={orderData}
-            selectedPaymentMethod={selectedPaymentMethod}
-            onPaymentMethodChange={handlePaymentMethodChange}
+            isProcessing={isProcessing}
             onCompleteOrder={handleCompleteOrder}
           />
         </Grid>

@@ -130,19 +130,17 @@ function SalePage() {
   }
 
   const handleCheckout = async () => {
-    // Validate cart không rỗng
+    // Validate cart is not empty
     if (cartItems.length === 0) {
-      setAlertMessage(
-        'Giỏ hàng trống! Vui lòng thêm sản phẩm trước khi thanh toán.',
-      )
+      setAlertMessage('Cart is empty! Please add products before checkout.')
       setAlertSeverity('warning')
       setAlertOpen(true)
       return
     }
 
-    // Validate bắt buộc phải có customer
+    // Validate customer is required
     if (!selectedCustomer) {
-      setAlertMessage('Vui lòng chọn khách hàng trước khi thanh toán!')
+      setAlertMessage('Please select a customer before checkout!')
       setAlertSeverity('error')
       setAlertOpen(true)
       return
@@ -152,7 +150,7 @@ function SalePage() {
       const total = getTotal()
       const totalQuantity = getTotalItems()
 
-      // Lưu dữ liệu order vào context trước khi checkout
+      // Save order data to context before checkout
       const orderData = {
         customer: selectedCustomer,
         cartItems,
@@ -171,13 +169,13 @@ function SalePage() {
         clearCart()
         setSuccessDialogOpen(true)
       } else {
-        setAlertMessage(result.message || 'Thanh toán thất bại!')
+        setAlertMessage(result.message || 'Checkout failed!')
         setAlertSeverity('error')
         setAlertOpen(true)
       }
     } catch (error) {
       console.error('Checkout error:', error)
-      setAlertMessage('Có lỗi xảy ra trong quá trình thanh toán!')
+      setAlertMessage('An error occurred during checkout!')
       setAlertSeverity('error')
       setAlertOpen(true)
     }
@@ -185,7 +183,7 @@ function SalePage() {
 
   const handleCloseSuccessDialog = () => {
     setSuccessDialogOpen(false)
-    // Chuyển sang màn hình thanh toán
+    // Navigate to payment screen
     navigate({ to: '/payment' })
   }
 

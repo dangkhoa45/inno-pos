@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
+import CircularProgress from '@mui/material/CircularProgress'
 import InputAdornment from '@mui/material/InputAdornment'
 import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
@@ -19,12 +20,19 @@ interface PaymentFormProps {
   orderData: OrderData | null
   selectedPaymentMethod?: string
   onPaymentMethodChange?: (method: string) => void
-  onCompleteOrder: () => void
+  isProcessing?: boolean
+  onCompleteOrder: (paymentData: {
+    paymentMethod: PaymentMethod
+    totalPaid: number
+    changeAmount: number
+    splitPayments?: Array<{ method: PaymentMethod; amount: string }>
+  }) => void
 }
 
 const PaymentForm: React.FC<PaymentFormProps> = ({
   orderData,
   onCompleteOrder,
+  isProcessing = false,
 }) => {
   const grandTotal = orderData?.totalAmount || 0
   const orderId = orderData?.orderId || 'ORDER-001'
@@ -116,25 +124,66 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   }
 
   const handleCompleteOrder = () => {
+    // Validation 1: Check payment method
+    if (!selectedMethod) {
+      setPaymentError('Please select a payment method!')
+      return
+    }
+
+    // Validation 2: Check order data
+    if (!orderData || !orderData.cartItems.length) {
+      setPaymentError('No valid order data available!')
+      return
+    }
+
+    // Validation 3: Calculate and validate payment amount
     let totalPaid = 0
 
     if (!enableSplitPayment) {
       totalPaid = parseFloat(paidAmount) || 0
+
+      if (!paidAmount || totalPaid <= 0) {
+        setPaymentError('Please enter payment amount!')
+        return
+      }
     } else {
+      // Validate split payments
+      const validSplitPayments = splitPayments.filter(
+        (p) => p.amount && parseFloat(p.amount) > 0,
+      )
+
+      if (validSplitPayments.length === 0) {
+        setPaymentError('Please enter at least one payment method!')
+        return
+      }
+
       totalPaid = splitPayments.reduce(
         (sum, payment) => sum + (parseFloat(payment.amount) || 0),
         0,
       )
     }
 
+    // Validation 4: Check sufficient payment
     if (totalPaid < grandTotal) {
       setPaymentError(
-        `Payment amount must be at least VND ${grandTotal.toLocaleString()}`,
+        `Insufficient payment amount. Need VND ${(grandTotal - totalPaid).toLocaleString()} more`,
       )
       return
     }
 
-    onCompleteOrder()
+    // Clear any previous errors
+    setPaymentError('')
+
+    // Prepare payment data
+    const paymentData = {
+      paymentMethod: selectedMethod,
+      totalPaid,
+      changeAmount: totalPaid - grandTotal,
+      ...(enableSplitPayment && { splitPayments }),
+    }
+
+    // Call parent completion handler
+    onCompleteOrder(paymentData)
   }
 
   const getQRCodeValue = () => {
@@ -473,7 +522,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
             fullWidth
             size="large"
             onClick={handleCompleteOrder}
-            disabled={!isPaymentComplete}
+            disabled={!isPaymentComplete || isProcessing}
             sx={{
               mt: 1,
               py: 1.5,
@@ -486,7 +535,14 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
               },
             }}
           >
-            Complete Order
+            {isProcessing ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CircularProgress size={20} color="inherit" />
+                <Typography variant="inherit">Processing...</Typography>
+              </Box>
+            ) : (
+              'Complete Order'
+            )}
           </Button>
         </Box>
       </Paper>
