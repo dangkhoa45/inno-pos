@@ -51,9 +51,9 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
       <DialogTitle sx={{ px: 3, pb: 2 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" alignItems="flex-start" flexDirection={'column'}>
-            <Typography fontWeight="bold">Xem trước biên nhận</Typography>
+            <Typography fontWeight="bold">Receipt Preview</Typography>
             <Typography variant="caption" color="text.secondary">
-              Xem trước biên nhận trước khi in
+              Preview receipt before printing
             </Typography>
           </Box>
           <IconButton onClick={onClose} size="small">
@@ -82,7 +82,7 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
           my={1.5}
           width={'100%'}
         >
-          <Typography fontWeight="bold">Xem trước</Typography>
+          <Typography fontWeight="bold">Preview</Typography>
           <Box display="flex" gap={1}>
             <Button
               size="small"
@@ -91,7 +91,7 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
               color="secondary"
               sx={{ bgcolor: 'white' }}
             >
-              Chữ ký khách hàng
+              Customer Signature
             </Button>
             <Button
               size="small"
@@ -100,7 +100,7 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
               color="secondary"
               sx={{ bgcolor: 'white' }}
             >
-              Chữ ký nhân viên
+              Staff Signature
             </Button>
             <IconButton
               onClick={handlePrint}
@@ -130,10 +130,10 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
               fontWeight="medium"
               mt={1}
             >
-              BỆNH VIỆN ĐỒNG HỒ JSC
+              DONG HO HOSPITAL JSC
             </Typography>
             <Typography variant="body2">
-              123 Đường Hoàng Hoa Thám, Quận Ba Đình, Hà Nội
+              123 Hoang Hoa Tham Street, Ba Dinh District, Hanoi
             </Typography>
             <Typography variant="body2">Hotline: 1900 1234</Typography>
           </Box>
@@ -144,22 +144,22 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
             textAlign="center"
             sx={{ my: 2 }}
           >
-            BIÊN NHẬN
+            RECEIPT
           </Typography>
 
           <Box mb={2}>
             <Box display="flex" justifyContent="space-between">
-              <Typography variant="body2">Số đơn hàng:</Typography>
+              <Typography variant="body2">Order ID:</Typography>
               <Typography variant="body2">{orderData.orderId}</Typography>
             </Box>
             <Box display="flex" justifyContent="space-between">
-              <Typography variant="body2">Ngày:</Typography>
+              <Typography variant="body2">Date:</Typography>
               <Typography variant="body2">
                 {formatDate(orderData.timestamp as string)}
               </Typography>
             </Box>
             <Box display="flex" justifyContent="space-between">
-              <Typography variant="body2">Khách hàng:</Typography>
+              <Typography variant="body2">Customer:</Typography>
               <Typography variant="body2">
                 {orderData.customer?.name || '---'}
               </Typography>
@@ -168,7 +168,7 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
 
           <Divider sx={{ my: 2 }} />
           <Typography variant="body2" fontWeight="bold" mb={1}>
-            Thông tin đơn hàng:
+            Order Information:
           </Typography>
           {orderData.cartItems.map((item, idx) => (
             <Box key={idx} display="flex" justifyContent="space-between" mb={1}>
@@ -182,7 +182,7 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
           <Divider sx={{ my: 2 }} />
           <Box display="flex" justifyContent="space-between" mb={3}>
             <Typography variant="body1" fontWeight="bold">
-              Tổng cộng:
+              Total:
             </Typography>
             <Typography variant="body1" fontWeight="bold">
               {subtotal.toLocaleString()} VND
@@ -191,7 +191,7 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
 
           <Box display="flex" justifyContent="space-between" mt={4} mb={2}>
             <Box width="48%" textAlign="center">
-              <Typography variant="body2">Khách hàng</Typography>
+              <Typography variant="body2">Customer</Typography>
               <Box
                 sx={{
                   borderBottom: '1px solid #ccc',
@@ -202,7 +202,7 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
               />
             </Box>
             <Box width="48%" textAlign="center">
-              <Typography variant="body2">Nhân viên</Typography>
+              <Typography variant="body2">Staff</Typography>
               <Box
                 sx={{
                   borderBottom: '1px solid #ccc',
@@ -215,14 +215,13 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
           </Box>
           <Box textAlign="center" mb={2}>
             <Typography variant="caption" color="text.secondary">
-              (Ký và ghi rõ họ tên)
+              (Sign and print full name)
             </Typography>
           </Box>
 
           <Typography variant="body2" textAlign="center" mt={2}>
-            Cảm ơn quý khách đã sử dụng dịch vụ của Bệnh Viện Đồng Hồ JSC!{' '}
-            <br />
-            Vui lòng giữ biên nhận này để đối chiếu khi nhận hàng.
+            Thank you for using Dong Ho Hospital JSC services! <br />
+            Please keep this receipt for verification when receiving goods.
           </Typography>
         </Box>
       </DialogContent>
@@ -234,10 +233,10 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
           color="secondary"
           sx={{ bgcolor: 'white' }}
         >
-          Hủy
+          Cancel
         </Button>
         <Button onClick={() => {}} variant="contained" color="primary">
-          Xác nhận
+          Confirm
         </Button>
       </DialogActions>
     </Dialog>
