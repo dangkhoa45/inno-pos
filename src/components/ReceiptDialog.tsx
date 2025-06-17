@@ -1,6 +1,7 @@
 import React from 'react'
 
 import CloseIcon from '@mui/icons-material/Close'
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline'
 import PrintIcon from '@mui/icons-material/Print'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -49,7 +50,12 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle sx={{ px: 3, pb: 2 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography fontWeight="bold">Xem trước biên nhận</Typography>
+          <Box display="flex" alignItems="flex-start" flexDirection={'column'}>
+            <Typography fontWeight="bold">Xem trước biên nhận</Typography>
+            <Typography variant="caption" color="text.secondary">
+              Xem trước biên nhận trước khi in
+            </Typography>
+          </Box>
           <IconButton onClick={onClose} size="small">
             <CloseIcon />
           </IconButton>
@@ -78,19 +84,32 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
         >
           <Typography fontWeight="bold">Xem trước</Typography>
           <Box display="flex" gap={1}>
-            <Button size="small" variant="outlined">
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<DriveFileRenameOutlineIcon />}
+              color="secondary"
+              sx={{ bgcolor: 'white' }}
+            >
               Chữ ký khách hàng
             </Button>
-            <Button size="small" variant="outlined">
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<DriveFileRenameOutlineIcon />}
+              color="secondary"
+              sx={{ bgcolor: 'white' }}
+            >
               Chữ ký nhân viên
             </Button>
-            <Button
+            <IconButton
               onClick={handlePrint}
-              variant="contained"
-              startIcon={<PrintIcon />}
+              color="secondary"
+              size="small"
+              sx={{ bgcolor: 'white' }}
             >
-              In biên nhận
-            </Button>
+              <PrintIcon />
+            </IconButton>
           </Box>
         </Box>
         <Box
@@ -209,7 +228,12 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
       </DialogContent>
 
       <DialogActions sx={{ px: 3, pb: 3, justifyContent: 'space-between' }}>
-        <Button onClick={onClose} variant="outlined">
+        <Button
+          onClick={onClose}
+          variant="outlined"
+          color="secondary"
+          sx={{ bgcolor: 'white' }}
+        >
           Hủy
         </Button>
         <Button onClick={() => {}} variant="contained" color="primary">
