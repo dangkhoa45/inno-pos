@@ -20,9 +20,11 @@
 		"@mui/material": "^7.1.1",
 		"@tanstack/react-router": "^1.120.20",
 		"@tanstack/react-router-devtools": "^1.120.20",
+		"@types/react-signature-canvas": "^1.0.7",
 		"firebase": "^11.9.0",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
+		"react-signature-canvas": "^1.1.0-alpha.2",
 		"zod": "^3.25.56"
 	},
 	"devDependencies": {
