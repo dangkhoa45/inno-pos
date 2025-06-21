@@ -8,10 +8,12 @@ import OrderSummary from './components/OrderSummary'
 import PaymentForm from './components/PaymentForm'
 import ReceiptDialog from '../../components/ReceiptDialog'
 import { useOrder } from '../../stores/OrderContext'
+import { useOrders } from '@/stores/OrdersContext'
 
 export default function Payment() {
   const navigate = useNavigate()
   const { orderData, clearOrderData, setOrderData } = useOrder()
+  const { addOrder } = useOrders()
   const [isProcessing, setIsProcessing] = useState(false)
   const [showReceipt, setShowReceipt] = useState(false)
   const [completedPaymentData, setCompletedPaymentData] = useState<{
@@ -119,7 +121,17 @@ export default function Payment() {
     }
   }
 
-  const handleCloseReceipt = () => {
+  const handleConfirmReceipt = () => {
+    if (orderData) {
+      addOrder(orderData)
+    }
+    setShowReceipt(false)
+    setCompletedPaymentData(null)
+    clearOrderData()
+    navigate({ to: '/sale' })
+  }
+
+  const handleCancelReceipt = () => {
     setShowReceipt(false)
     setCompletedPaymentData(null)
     clearOrderData()
@@ -169,7 +181,8 @@ export default function Payment() {
       {completedPaymentData && (
         <ReceiptDialog
           open={showReceipt}
-          onClose={handleCloseReceipt}
+          onConfirm={handleConfirmReceipt}
+          onCancel={handleCancelReceipt}
           orderData={orderData}
           paymentData={completedPaymentData}
         />

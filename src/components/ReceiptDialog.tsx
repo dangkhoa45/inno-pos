@@ -20,7 +20,8 @@ import type { OrderData } from '../stores/OrderContext'
 
 interface ReceiptDialogProps {
   open: boolean
-  onClose: () => void
+  onConfirm: () => void
+  onCancel: () => void
   orderData: OrderData | null
   paymentData: {
     paymentMethod: string
@@ -32,7 +33,8 @@ interface ReceiptDialogProps {
 
 const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
   open,
-  onClose,
+  onConfirm,
+  onCancel,
   orderData,
 }) => {
   const [customerSignature, setCustomerSignature] = useState<string | null>(null)
@@ -60,18 +62,9 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
     handleCloseSignatureDialog()
   }
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('vi-VN')
-  }
-
-  const subtotal = orderData.cartItems.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
-    0,
-  )
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={onCancel} maxWidth="md" fullWidth>
       <DialogTitle sx={{ px: 3, pb: 2 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" alignItems="flex-start" flexDirection={'column'}>
@@ -80,7 +73,7 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
               Preview receipt before printing
             </Typography>
           </Box>
-          <IconButton onClick={onClose} size="small">
+          <IconButton onClick={onCancel} size="small">
             <CloseIcon />
           </IconButton>
         </Box>
@@ -146,11 +139,11 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({
       </DialogContent>
 
       <DialogActions sx={{ p: 2.5, pt: 1.5 }}>
-        <Button onClick={onClose} variant="outlined" color="secondary">
-          Close
+        <Button onClick={onCancel} variant="outlined" color="secondary">
+          Cancel
         </Button>
-        <Button onClick={handlePrint} variant="contained">
-          Print Receipt
+        <Button onClick={onConfirm} variant="contained">
+          Confirm
         </Button>
       </DialogActions>
 

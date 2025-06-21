@@ -14,6 +14,7 @@ export interface OrderData {
   totalQuantity: number
   orderId?: string
   timestamp?: string
+  notes?: string
 }
 
 interface OrderContextType {

@@ -11,16 +11,23 @@ import Paper from '@mui/material/Paper'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { Outlet } from '@tanstack/react-router'
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
+import Badge from '@mui/material/Badge'
 
 import { Navigation } from '@/components/Navigation'
+import { OrderProcessingDialog } from '@/components/OrderProcessingDialog'
 import { LoginForm } from '@/pages/login'
 import { AuthProvider, useAuth } from '@/stores/AuthContext'
 import { OrderProvider } from '@/stores/OrderContext'
+import { OrdersProvider } from '@/stores/OrdersContext'
+import { useOrders } from '@/stores/OrdersContext'
 import { ThemeProvider } from '@/theme'
 
 function RootLayoutInner() {
   const { currentUser, loading, logout } = useAuth()
+  const { orders } = useOrders()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false)
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -92,6 +99,11 @@ function RootLayoutInner() {
             Inno POS
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <IconButton color="inherit" onClick={() => setIsOrderDialogOpen(true)}>
+              <Badge badgeContent={orders.length} color="error">
+                <ReceiptLongIcon />
+              </Badge>
+            </IconButton>
             <Button color="inherit" onClick={logout}>
               Logout
             </Button>
@@ -102,6 +114,10 @@ function RootLayoutInner() {
       <Container maxWidth={false} sx={{ flex: 1, py: 3 }}>
         <Outlet />
       </Container>
+      <OrderProcessingDialog
+        open={isOrderDialogOpen}
+        onClose={() => setIsOrderDialogOpen(false)}
+      />
     </Box>
   )
 }
@@ -111,7 +127,9 @@ export default function Root() {
     <ThemeProvider>
       <AuthProvider>
         <OrderProvider>
-          <RootLayoutInner />
+          <OrdersProvider>
+            <RootLayoutInner />
+          </OrdersProvider>
         </OrderProvider>
       </AuthProvider>
     </ThemeProvider>
