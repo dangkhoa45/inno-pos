@@ -6,6 +6,11 @@ export interface Product {
   image?: string
   stock: number
   category: string
+  group?: string
+  brand?: string
+  color?: string[]
+  material?: string[]
+  spec?: string[]
 }
 
 export interface Customer {

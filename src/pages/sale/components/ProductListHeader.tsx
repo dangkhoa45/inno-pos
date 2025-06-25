@@ -1,21 +1,14 @@
 import { useState } from 'react'
 
-import ClearIcon from '@mui/icons-material/Clear'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import SearchIcon from '@mui/icons-material/Search'
 import Autocomplete from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Checkbox from '@mui/material/Checkbox'
-import Chip from '@mui/material/Chip'
-import Divider from '@mui/material/Divider'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import IconButton from '@mui/material/IconButton'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
+import ProductFilterPopover from './ProductFilterPopover'
 import { mockProducts } from '../../../mockup/data-product'
 
 import type { Product } from '../../../types/sale'
@@ -40,20 +33,18 @@ const ProductListHeader = ({
 }: ProductListHeaderProps) => {
   const [searchValue, setSearchValue] = useState<Product | null>(null)
   const [inputValue, setInputValue] = useState('')
-  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null)
+  const [filterPopoverAnchor, setFilterPopoverAnchor] =
+    useState<null | HTMLElement>(null)
   const [activeFilters, setActiveFilters] = useState<FilterOptions>({
     categories: [],
     priceRange: { min: 0, max: 10000000 },
     inStockOnly: false,
   })
 
-  const categories = Array.from(
-    new Set(mockProducts.map((product) => product.category)),
-  ).sort()
-
-  const getFilteredProducts = (searchTerm: string, filters: FilterOptions) => {
+  const getFilteredProducts = (searchTerm: string, filters: any) => {
     let filtered = mockProducts
 
+    // Search filter
     if (searchTerm) {
       filtered = filtered.filter(
         (product) =>
@@ -62,18 +53,69 @@ const ProductListHeader = ({
       )
     }
 
-    if (filters.categories.length > 0) {
-      filtered = filtered.filter((product) =>
-        filters.categories.includes(product.category),
+    // Group filter
+    const groups = filters.groups || []
+    if (groups.length > 0) {
+      filtered = filtered.filter(
+        (product) =>
+          product.group && groups.some((g: string) => product.group === g),
       )
     }
 
-    filtered = filtered.filter(
-      (product) =>
-        product.price >= filters.priceRange.min &&
-        product.price <= filters.priceRange.max,
-    )
+    // Brand filter
+    const brands = filters.brands || []
+    if (brands.length > 0) {
+      filtered = filtered.filter(
+        (product) => product.brand && brands.includes(product.brand),
+      )
+    }
 
+    // Spec filter
+    const specs = filters.specs || []
+    if (specs.length > 0) {
+      filtered = filtered.filter(
+        (product) =>
+          product.spec && product.spec.some((s) => specs.includes(s)),
+      )
+    }
+
+    // Color filter
+    const colors = filters.colors || []
+    if (colors.length > 0) {
+      filtered = filtered.filter(
+        (product) =>
+          product.color && product.color.some((c) => colors.includes(c)),
+      )
+    }
+
+    // Material filter
+    const materials = filters.materials || []
+    if (materials.length > 0) {
+      filtered = filtered.filter(
+        (product) =>
+          product.material &&
+          product.material.some((m) => materials.includes(m)),
+      )
+    }
+
+    // Category filter (giữ lại nếu cần)
+    const categories = filters.categories || []
+    if (categories.length > 0) {
+      filtered = filtered.filter((product) =>
+        categories.includes(product.category),
+      )
+    }
+
+    // Price range filter (giữ lại nếu cần)
+    if (filters.priceRange) {
+      filtered = filtered.filter(
+        (product) =>
+          product.price >= filters.priceRange.min &&
+          product.price <= filters.priceRange.max,
+      )
+    }
+
+    // In stock filter (giữ lại nếu cần)
     if (filters.inStockOnly) {
       filtered = filtered.filter((product) => product.stock > 0)
     }
@@ -90,70 +132,35 @@ const ProductListHeader = ({
     onSearchResults(filtered)
   }
 
-  const handleFilterMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setFilterAnchorEl(event.currentTarget)
+  const handleOpenFilterPopover = (event: React.MouseEvent<HTMLElement>) => {
+    setFilterPopoverAnchor(event.currentTarget)
   }
 
-  const handleFilterMenuClose = () => {
-    setFilterAnchorEl(null)
+  const handleCloseFilterPopover = () => {
+    setFilterPopoverAnchor(null)
   }
 
-  const handleCategoryFilter = (category: string) => {
-    const newCategories = activeFilters.categories.includes(category)
-      ? activeFilters.categories.filter((c) => c !== category)
-      : [...activeFilters.categories, category]
-
-    const newFilters = { ...activeFilters, categories: newCategories }
-    setActiveFilters(newFilters)
-
+  const handleApplyFilters = (filters: any) => {
+    // Merge filters với các trường mặc định để tránh undefined
+    setActiveFilters((prev) => ({
+      ...prev,
+      ...filters,
+      categories: prev.categories || [],
+      priceRange: prev.priceRange || { min: 0, max: 10000000 },
+      inStockOnly: prev.inStockOnly ?? false,
+    }))
+    setFilterPopoverAnchor(null)
     const searchTerm = searchValue ? searchValue.name : inputValue
-    const filtered = getFilteredProducts(searchTerm, newFilters)
-    onSearchResults(filtered)
-    onFiltersChange(newFilters)
-  }
-
-  const handleStockFilter = () => {
-    const newFilters = {
+    const mergedFilters = {
       ...activeFilters,
-      inStockOnly: !activeFilters.inStockOnly,
+      ...filters,
+      categories: activeFilters.categories || [],
+      priceRange: activeFilters.priceRange || { min: 0, max: 10000000 },
+      inStockOnly: activeFilters.inStockOnly ?? false,
     }
-    setActiveFilters(newFilters)
-
-    const searchTerm = searchValue ? searchValue.name : inputValue
-    const filtered = getFilteredProducts(searchTerm, newFilters)
+    const filtered = getFilteredProducts(searchTerm, mergedFilters)
     onSearchResults(filtered)
-    onFiltersChange(newFilters)
-  }
-
-  const handleClearFilters = () => {
-    const newFilters = {
-      categories: [],
-      priceRange: { min: 0, max: 10000000 },
-      inStockOnly: false,
-    }
-    setActiveFilters(newFilters)
-    setSearchValue(null)
-    setInputValue('')
-
-    onSearchResults(mockProducts)
-    onFiltersChange(newFilters)
-  }
-
-  const removeFilter = (filterType: string, value?: string) => {
-    const newFilters = { ...activeFilters }
-
-    if (filterType === 'category' && value) {
-      newFilters.categories = newFilters.categories.filter((c) => c !== value)
-    } else if (filterType === 'stock') {
-      newFilters.inStockOnly = false
-    }
-
-    setActiveFilters(newFilters)
-
-    const searchTerm = searchValue ? searchValue.name : inputValue
-    const filtered = getFilteredProducts(searchTerm, newFilters)
-    onSearchResults(filtered)
-    onFiltersChange(newFilters)
+    onFiltersChange(mergedFilters)
   }
 
   const getActiveFilterCount = () => {
@@ -214,124 +221,21 @@ const ProductListHeader = ({
           )}
         />
         <Box sx={{ display: 'flex', gap: 2 }}>
-          {(getActiveFilterCount() > 0 || searchValue || inputValue) && (
-            <Button
-              startIcon={<ClearIcon />}
-              onClick={handleClearFilters}
-              size="small"
-              variant="outlined"
-            >
-              Clear All
-            </Button>
-          )}
           <IconButton
-            onClick={handleFilterMenuOpen}
+            onClick={handleOpenFilterPopover}
             color={getActiveFilterCount() > 0 ? 'primary' : 'default'}
-            sx={{
-              border: 1,
-              borderColor:
-                getActiveFilterCount() > 0 ? 'primary.main' : 'divider',
-            }}
           >
             <FilterListIcon />
           </IconButton>
+          <ProductFilterPopover
+            anchorEl={filterPopoverAnchor}
+            open={Boolean(filterPopoverAnchor)}
+            onClose={handleCloseFilterPopover}
+            onApply={handleApplyFilters}
+            currentFilters={activeFilters}
+          />
         </Box>
       </Box>
-
-      {(getActiveFilterCount() > 0 || searchValue) && (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-          {searchValue && (
-            <Chip
-              label={`Search: ${searchValue.name}`}
-              onDelete={() => {
-                setSearchValue(null)
-                setInputValue('')
-                const filtered = getFilteredProducts('', activeFilters)
-                onSearchResults(filtered)
-              }}
-              size="small"
-              color="primary"
-              variant="outlined"
-              sx={{ mb: 1 }}
-            />
-          )}
-
-          {activeFilters.categories.map((category) => (
-            <Chip
-              key={category}
-              label={`Category: ${category}`}
-              onDelete={() => removeFilter('category', category)}
-              size="small"
-              color="secondary"
-              variant="outlined"
-              sx={{ mb: 1 }}
-            />
-          ))}
-
-          {activeFilters.inStockOnly && (
-            <Chip
-              label="In Stock"
-              onDelete={() => removeFilter('stock')}
-              size="small"
-              color="success"
-              variant="outlined"
-              sx={{ mb: 1 }}
-            />
-          )}
-        </Box>
-      )}
-
-      <Menu
-        anchorEl={filterAnchorEl}
-        open={Boolean(filterAnchorEl)}
-        onClose={handleFilterMenuClose}
-        PaperProps={{
-          sx: { minWidth: 250, maxHeight: 400 },
-        }}
-      >
-        <Box sx={{ p: 2 }}>
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-            Filters
-          </Typography>
-        </Box>
-
-        <Divider />
-
-        <MenuItem>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={activeFilters.inStockOnly}
-                onChange={handleStockFilter}
-                size="small"
-              />
-            }
-            label="Show only products in stock"
-          />
-        </MenuItem>
-
-        <Divider />
-
-        <Box sx={{ p: 1 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ px: 1 }}>
-            Categories
-          </Typography>
-          {categories.map((category) => (
-            <MenuItem key={category} dense>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={activeFilters.categories.includes(category)}
-                    onChange={() => handleCategoryFilter(category)}
-                    size="small"
-                  />
-                }
-                label={category}
-              />
-            </MenuItem>
-          ))}
-        </Box>
-      </Menu>
     </Box>
   )
 }
