@@ -2,13 +2,12 @@ import React from 'react'
 
 import { mdiSaleOutline } from '@mdi/js'
 import Icon from '@mdi/react'
-import Autocomplete from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
-import InputAdornment from '@mui/material/InputAdornment'
+import Button from '@mui/material/Button'
 import { useTheme } from '@mui/material/styles'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
+import DiscountPopup from '../../../components/discount/DiscountPopup'
 import {
   mockDiscountOptions,
   type DiscountOption,
@@ -30,107 +29,68 @@ const DiscountSection: React.FC<DiscountSectionProps> = ({
   disabled = false,
 }) => {
   const theme = useTheme()
-
-  const handleAutocompleteChange = (
-    _event: any,
-    value: string | DiscountOption | null,
-  ) => {
-    // Prevent selection when disabled
-    if (disabled) {
-      return
-    }
-
-    if (value && typeof value === 'object') {
-      onDiscountChange(value.value)
-      onDiscountTypeChange(value.type)
-    } else {
-      // Reset discount when user clears selection
-      onDiscountChange(0)
-      onDiscountTypeChange('percent')
-    }
-  }
+  const [popupOpen, setPopupOpen] = React.useState(false)
 
   const currentOption = mockDiscountOptions.find(
     (option) => option.value === discount && option.type === discountType,
   )
 
-  // Clear selection when disabled (cart is empty)
-  const displayValue = disabled ? null : currentOption || null
+  const handleSelectDiscount = (option: DiscountOption | null) => {
+    if (option) {
+      onDiscountChange(option.value)
+      onDiscountTypeChange(option.type)
+    } else {
+      onDiscountChange(0)
+      onDiscountTypeChange('percent')
+    }
+    setPopupOpen(false)
+  }
 
   return (
     <Box sx={{ mb: 1.5 }}>
-      <Autocomplete
-        size="small"
-        options={mockDiscountOptions}
-        disabled={disabled}
-        getOptionLabel={(option) =>
-          typeof option === 'string'
-            ? option
-            : `${option.title} - ${option.label}`
-        }
-        value={displayValue}
-        onChange={handleAutocompleteChange}
-        renderOption={(props, option) => (
-          <Box component="li" {...props}>
-            <Box>
-              <Typography variant="body2" fontWeight="bold">
-                {option.title}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {option.desc} • {option.label}
-              </Typography>
-            </Box>
-          </Box>
-        )}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder={
-              disabled ? 'Add items to apply discount' : 'Add discount'
-            }
-            variant="outlined"
-            size="small"
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Icon
-                    path={mdiSaleOutline}
-                    size={1}
-                    color={theme.palette.text.secondary}
-                  />
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 1,
-                backgroundColor: theme.palette.background.paper,
-                '& fieldset': {
-                  borderStyle: 'dashed',
-                  borderWidth: '1px',
-                  borderColor: theme.palette.divider,
-                },
-                '&:hover fieldset': {
-                  borderColor: theme.palette.text.secondary,
-                  borderStyle: 'dashed',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: theme.palette.text.secondary,
-                  borderStyle: 'dashed',
-                  borderWidth: '2px',
-                },
-              },
-              '& .MuiAutocomplete-endAdornment': {
-                display: 'none',
-              },
-            }}
+      <Button
+        variant="outlined"
+        fullWidth
+        startIcon={
+          <Icon
+            path={mdiSaleOutline}
+            size={1}
+            color={theme.palette.text.secondary}
           />
-        )}
+        }
+        onClick={() => setPopupOpen(true)}
+        disabled={disabled}
         sx={{
-          width: '100%',
+          justifyContent: 'flex-start',
+          borderRadius: 1,
+          backgroundColor: theme.palette.background.paper,
+          borderStyle: 'dashed',
+          borderWidth: '1px',
+          borderColor: theme.palette.divider,
+          textTransform: 'none',
+          minHeight: 40,
         }}
-        clearOnEscape
+      >
+        {currentOption && !disabled ? (
+          <Box>
+            <Typography variant="body2" fontWeight="bold">
+              {currentOption.title}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {currentOption.label}
+            </Typography>
+          </Box>
+        ) : (
+          <Typography variant="body2" color="text.secondary">
+            {disabled ? 'Add items to apply discount' : 'Add discount'}
+          </Typography>
+        )}
+      </Button>
+      <DiscountPopup
+        open={popupOpen}
+        onClose={() => setPopupOpen(false)}
+        onSelectDiscount={handleSelectDiscount}
+        selectedDiscount={currentOption}
       />
     </Box>
   )
