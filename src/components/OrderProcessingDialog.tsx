@@ -1,4 +1,3 @@
-import dayjs, { type Dayjs } from 'dayjs'
 import { useMemo, useState } from 'react'
 
 import CloseIcon from '@mui/icons-material/Close'
@@ -6,12 +5,8 @@ import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import FormControl from '@mui/material/FormControl'
 import IconButton from '@mui/material/IconButton'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
 import Paper from '@mui/material/Paper'
-import Select from '@mui/material/Select'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -23,6 +18,7 @@ import Typography from '@mui/material/Typography'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import dayjs, { type Dayjs } from 'dayjs'
 
 import { useOrders } from '@/stores/OrdersContext'
 
@@ -115,9 +111,11 @@ export function OrderProcessingDialog({
       </DialogTitle>
       <DialogContent>
         <Box display="flex" gap={2} sx={{ height: '75vh', overflow: 'hidden' }}>
-         
           <Box flex="0 0 300px">
-            <Paper sx={{mt:0.5, mx: 0.5, p: 2, borderRadius: 2}} elevation={3}>
+            <Paper
+              sx={{ mt: 0.5, mx: 0.5, p: 2, borderRadius: 2 }}
+              elevation={3}
+            >
               <Typography variant="h6" gutterBottom>
                 Tìm kiếm
               </Typography>
@@ -150,7 +148,7 @@ export function OrderProcessingDialog({
                 sx={{ mb: 2 }}
               />
             </Paper>
-            <Paper sx={{mt: 2, mx: 0.5, p: 2, borderRadius: 2}} elevation={3}>
+            <Paper sx={{ mt: 2, mx: 0.5, p: 2, borderRadius: 2 }} elevation={3}>
               <Typography variant="h6" gutterBottom>
                 Time
               </Typography>
@@ -171,9 +169,16 @@ export function OrderProcessingDialog({
             </Paper>
           </Box>
 
-         
-          <Box flex="1 1 auto" sx={{ display: 'flex', flexDirection: 'column', m: 0.5 }}>
-            <TableContainer component={Paper} sx={{ flexGrow: 1 }} variant="outlined" elevation={3}>
+          <Box
+            flex="1 1 auto"
+            sx={{ display: 'flex', flexDirection: 'column', m: 0.5 }}
+          >
+            <TableContainer
+              component={Paper}
+              sx={{ flexGrow: 1 }}
+              variant="outlined"
+              elevation={3}
+            >
               <Table stickyHeader>
                 <TableHead>
                   <TableRow
@@ -227,4 +232,4 @@ export function OrderProcessingDialog({
       </DialogContent>
     </Dialog>
   )
-} 
+}

@@ -4,11 +4,12 @@ import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import { useNavigate } from '@tanstack/react-router'
 
+import { useOrders } from '@/stores/OrdersContext'
+
 import OrderSummary from './components/OrderSummary'
 import PaymentForm from './components/PaymentForm'
 import ReceiptDialog from '../../components/ReceiptDialog'
 import { useOrder } from '../../stores/OrderContext'
-import { useOrders } from '@/stores/OrdersContext'
 
 export default function Payment() {
   const navigate = useNavigate()

@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as SaleImport } from './routes/sale'
+import { Route as RepairImport } from './routes/repair'
 import { Route as PaymentImport } from './routes/payment'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
@@ -23,6 +24,12 @@ import { Route as PostsAddImport } from './routes/posts/add'
 const SaleRoute = SaleImport.update({
   id: '/sale',
   path: '/sale',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const RepairRoute = RepairImport.update({
+  id: '/repair',
+  path: '/repair',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,6 +88,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaymentImport
       parentRoute: typeof rootRoute
     }
+    '/repair': {
+      id: '/repair'
+      path: '/repair'
+      fullPath: '/repair'
+      preLoaderRoute: typeof RepairImport
+      parentRoute: typeof rootRoute
+    }
     '/sale': {
       id: '/sale'
       path: '/sale'
@@ -111,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/payment': typeof PaymentRoute
+  '/repair': typeof RepairRoute
   '/sale': typeof SaleRoute
   '/posts/add': typeof PostsAddRoute
   '/posts': typeof PostsIndexRoute
@@ -120,6 +135,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/payment': typeof PaymentRoute
+  '/repair': typeof RepairRoute
   '/sale': typeof SaleRoute
   '/posts/add': typeof PostsAddRoute
   '/posts': typeof PostsIndexRoute
@@ -130,6 +146,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/payment': typeof PaymentRoute
+  '/repair': typeof RepairRoute
   '/sale': typeof SaleRoute
   '/posts/add': typeof PostsAddRoute
   '/posts/': typeof PostsIndexRoute
@@ -137,14 +154,29 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/payment' | '/sale' | '/posts/add' | '/posts'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/payment'
+    | '/repair'
+    | '/sale'
+    | '/posts/add'
+    | '/posts'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/payment' | '/sale' | '/posts/add' | '/posts'
+  to:
+    | '/'
+    | '/about'
+    | '/payment'
+    | '/repair'
+    | '/sale'
+    | '/posts/add'
+    | '/posts'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/payment'
+    | '/repair'
     | '/sale'
     | '/posts/add'
     | '/posts/'
@@ -155,6 +187,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   PaymentRoute: typeof PaymentRoute
+  RepairRoute: typeof RepairRoute
   SaleRoute: typeof SaleRoute
   PostsAddRoute: typeof PostsAddRoute
   PostsIndexRoute: typeof PostsIndexRoute
@@ -164,6 +197,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   PaymentRoute: PaymentRoute,
+  RepairRoute: RepairRoute,
   SaleRoute: SaleRoute,
   PostsAddRoute: PostsAddRoute,
   PostsIndexRoute: PostsIndexRoute,
@@ -182,6 +216,7 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/payment",
+        "/repair",
         "/sale",
         "/posts/add",
         "/posts/"
@@ -195,6 +230,9 @@ export const routeTree = rootRoute
     },
     "/payment": {
       "filePath": "payment.tsx"
+    },
+    "/repair": {
+      "filePath": "repair.tsx"
     },
     "/sale": {
       "filePath": "sale.tsx"
