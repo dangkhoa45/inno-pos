@@ -52,7 +52,6 @@ const ProductFilterPopover: React.FC<ProductFilterPopoverProps> = ({
     () => generateGroupTreeFromProducts(mockProducts),
     [],
   )
-  console.log('GROUP_TREE', GROUP_TREE)
 
   useEffect(() => {
     if (open && currentFilters) {
