@@ -11,7 +11,10 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TrahangImport } from './routes/trahang'
+import { Route as TestImport } from './routes/test'
 import { Route as SaleImport } from './routes/sale'
+import { Route as RepairAddImport } from './routes/repair-add'
 import { Route as RepairImport } from './routes/repair'
 import { Route as PaymentImport } from './routes/payment'
 import { Route as AboutImport } from './routes/about'
@@ -21,9 +24,27 @@ import { Route as PostsAddImport } from './routes/posts/add'
 
 // Create/Update Routes
 
+const TrahangRoute = TrahangImport.update({
+  id: '/trahang',
+  path: '/trahang',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TestRoute = TestImport.update({
+  id: '/test',
+  path: '/test',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const SaleRoute = SaleImport.update({
   id: '/sale',
   path: '/sale',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const RepairAddRoute = RepairAddImport.update({
+  id: '/repair-add',
+  path: '/repair-add',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -95,11 +116,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RepairImport
       parentRoute: typeof rootRoute
     }
+    '/repair-add': {
+      id: '/repair-add'
+      path: '/repair-add'
+      fullPath: '/repair-add'
+      preLoaderRoute: typeof RepairAddImport
+      parentRoute: typeof rootRoute
+    }
     '/sale': {
       id: '/sale'
       path: '/sale'
       fullPath: '/sale'
       preLoaderRoute: typeof SaleImport
+      parentRoute: typeof rootRoute
+    }
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestImport
+      parentRoute: typeof rootRoute
+    }
+    '/trahang': {
+      id: '/trahang'
+      path: '/trahang'
+      fullPath: '/trahang'
+      preLoaderRoute: typeof TrahangImport
       parentRoute: typeof rootRoute
     }
     '/posts/add': {
@@ -126,7 +168,10 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/payment': typeof PaymentRoute
   '/repair': typeof RepairRoute
+  '/repair-add': typeof RepairAddRoute
   '/sale': typeof SaleRoute
+  '/test': typeof TestRoute
+  '/trahang': typeof TrahangRoute
   '/posts/add': typeof PostsAddRoute
   '/posts': typeof PostsIndexRoute
 }
@@ -136,7 +181,10 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/payment': typeof PaymentRoute
   '/repair': typeof RepairRoute
+  '/repair-add': typeof RepairAddRoute
   '/sale': typeof SaleRoute
+  '/test': typeof TestRoute
+  '/trahang': typeof TrahangRoute
   '/posts/add': typeof PostsAddRoute
   '/posts': typeof PostsIndexRoute
 }
@@ -147,7 +195,10 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/payment': typeof PaymentRoute
   '/repair': typeof RepairRoute
+  '/repair-add': typeof RepairAddRoute
   '/sale': typeof SaleRoute
+  '/test': typeof TestRoute
+  '/trahang': typeof TrahangRoute
   '/posts/add': typeof PostsAddRoute
   '/posts/': typeof PostsIndexRoute
 }
@@ -159,7 +210,10 @@ export interface FileRouteTypes {
     | '/about'
     | '/payment'
     | '/repair'
+    | '/repair-add'
     | '/sale'
+    | '/test'
+    | '/trahang'
     | '/posts/add'
     | '/posts'
   fileRoutesByTo: FileRoutesByTo
@@ -168,7 +222,10 @@ export interface FileRouteTypes {
     | '/about'
     | '/payment'
     | '/repair'
+    | '/repair-add'
     | '/sale'
+    | '/test'
+    | '/trahang'
     | '/posts/add'
     | '/posts'
   id:
@@ -177,7 +234,10 @@ export interface FileRouteTypes {
     | '/about'
     | '/payment'
     | '/repair'
+    | '/repair-add'
     | '/sale'
+    | '/test'
+    | '/trahang'
     | '/posts/add'
     | '/posts/'
   fileRoutesById: FileRoutesById
@@ -188,7 +248,10 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   PaymentRoute: typeof PaymentRoute
   RepairRoute: typeof RepairRoute
+  RepairAddRoute: typeof RepairAddRoute
   SaleRoute: typeof SaleRoute
+  TestRoute: typeof TestRoute
+  TrahangRoute: typeof TrahangRoute
   PostsAddRoute: typeof PostsAddRoute
   PostsIndexRoute: typeof PostsIndexRoute
 }
@@ -198,7 +261,10 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   PaymentRoute: PaymentRoute,
   RepairRoute: RepairRoute,
+  RepairAddRoute: RepairAddRoute,
   SaleRoute: SaleRoute,
+  TestRoute: TestRoute,
+  TrahangRoute: TrahangRoute,
   PostsAddRoute: PostsAddRoute,
   PostsIndexRoute: PostsIndexRoute,
 }
@@ -217,7 +283,10 @@ export const routeTree = rootRoute
         "/about",
         "/payment",
         "/repair",
+        "/repair-add",
         "/sale",
+        "/test",
+        "/trahang",
         "/posts/add",
         "/posts/"
       ]
@@ -234,8 +303,17 @@ export const routeTree = rootRoute
     "/repair": {
       "filePath": "repair.tsx"
     },
+    "/repair-add": {
+      "filePath": "repair-add.tsx"
+    },
     "/sale": {
       "filePath": "sale.tsx"
+    },
+    "/test": {
+      "filePath": "test.tsx"
+    },
+    "/trahang": {
+      "filePath": "trahang.tsx"
     },
     "/posts/add": {
       "filePath": "posts/add.tsx"

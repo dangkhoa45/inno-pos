@@ -17,6 +17,7 @@ import {
   Search as SearchIcon,
   Undo as UndoIcon,
 } from '@mui/icons-material'
+import { useNavigate } from '@tanstack/react-router'
 import {
   Backdrop,
   Box,
@@ -35,6 +36,7 @@ import AddCustomerModal from '../../../components/AddCustomerModal'
 import RepairServiceForm from '../../../components/RepairServiceForm'
 
 const AddRepairPage = () => {
+  const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [isCustomerModalOpen, setCustomerModalOpen] = React.useState(false)
   const [showForm, setShowForm] = React.useState(false)
@@ -44,6 +46,11 @@ const AddRepairPage = () => {
   const handleClick = (event: React.MouseEvent<HTMLElement>) =>
     setAnchorEl(event.currentTarget)
   const handleClose = () => setAnchorEl(null)
+  
+  const handleNewRepair = () => {
+    handleClose()
+    navigate({ to: '/repair-add' })
+  }
 
   const handleSave = () => {
     setShowSuccessModal(true)
@@ -180,7 +187,7 @@ const AddRepairPage = () => {
             }}
           >
             <MenuItem onClick={handleClose}>Thêm mới đặt hàng</MenuItem>
-            <MenuItem onClick={handleClose}>Thêm mới sửa chữa</MenuItem>
+            <MenuItem onClick={handleNewRepair}>Thêm mới sửa chữa</MenuItem>
           </Menu>
         </Box>
         <Box sx={{ flexGrow: 1 }} />
@@ -469,7 +476,6 @@ const AddRepairPage = () => {
           borderRadius: '8px',
           border: '1px solid #dee2e6',
           minHeight: '60px',
-          position: 'sticky',
           bottom: 0,
           zIndex: 10,
           bgcolor: 'white',
