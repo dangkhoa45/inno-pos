@@ -8,6 +8,8 @@ import IconButton from '@mui/material/IconButton'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 
+import AdvancedSearchDialog from '../../../components/AdvancedSearchDialog'
+import CustomerDetailDialog from '../../../components/CustomerDetailDialog'
 import CustomerSelector from '../../../components/CustomerSelector'
 import { mockCustomers, type Customer } from '../../../mockup'
 
@@ -23,6 +25,10 @@ const CustomerInfo = ({
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null,
   )
+  const [openAdvancedSearch, setOpenAdvancedSearch] = useState(false)
+  const [selectedCustomerForDetail, setSelectedCustomerForDetail] =
+    useState<Customer | null>(null)
+  const [openCustomerDetail, setOpenCustomerDetail] = useState(false)
 
   const handleCustomerSelect = (customer: Customer | null) => {
     setSelectedCustomer(customer)
@@ -41,7 +47,26 @@ const CustomerInfo = ({
   }
 
   const handleAdvancedSearch = () => {
-    // TODO: Open advanced search dialog
+    setOpenAdvancedSearch(true)
+  }
+
+  const handleSelectCustomerFromAdvanced = (customer: Customer) => {
+    setSelectedCustomerForDetail(customer)
+    setOpenAdvancedSearch(false)
+    setOpenCustomerDetail(true)
+  }
+
+  const handleCloseCustomerDetail = () => {
+    setOpenCustomerDetail(false)
+    if (selectedCustomerForDetail) {
+      setSelectedCustomer(selectedCustomerForDetail)
+      onCustomerChange?.(selectedCustomerForDetail)
+    }
+  }
+
+  const handleBackToAdvanced = () => {
+    setOpenCustomerDetail(false)
+    setOpenAdvancedSearch(true)
   }
 
   return (
@@ -90,6 +115,18 @@ const CustomerInfo = ({
           </Box>
         )}
       </Box>
+      <AdvancedSearchDialog
+        open={openAdvancedSearch}
+        customers={mockCustomers.slice(0, 3)}
+        onClose={() => setOpenAdvancedSearch(false)}
+        onSelectCustomer={handleSelectCustomerFromAdvanced}
+      />
+      <CustomerDetailDialog
+        open={openCustomerDetail}
+        customer={selectedCustomerForDetail}
+        onClose={handleCloseCustomerDetail}
+        onBack={handleBackToAdvanced}
+      />
     </Paper>
   )
 }

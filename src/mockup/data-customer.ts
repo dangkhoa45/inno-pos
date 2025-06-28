@@ -15,6 +15,9 @@ export interface Customer {
   createdAt: string
   lastOrderAt?: string
   avatar?: string
+  faceLeft?: string
+  faceCenter?: string
+  faceRight?: string
 }
 
 export const mockCustomers: Customer[] = [
@@ -33,6 +36,10 @@ export const mockCustomers: Customer[] = [
     status: 'active',
     createdAt: '2024-01-15T08:30:00Z',
     lastOrderAt: '2025-06-10T14:20:00Z',
+    avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+    faceLeft: 'https://randomuser.me/api/portraits/men/32.jpg',
+    faceCenter: 'https://randomuser.me/api/portraits/men/33.jpg',
+    faceRight: 'https://randomuser.me/api/portraits/men/34.jpg',
   },
   {
     id: 'CUST-2025-05586',
@@ -49,6 +56,10 @@ export const mockCustomers: Customer[] = [
     status: 'active',
     createdAt: '2023-08-20T10:15:00Z',
     lastOrderAt: '2025-06-12T16:45:00Z',
+    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+    faceLeft: 'https://randomuser.me/api/portraits/women/44.jpg',
+    faceCenter: 'https://randomuser.me/api/portraits/women/45.jpg',
+    faceRight: 'https://randomuser.me/api/portraits/women/46.jpg',
   },
   {
     id: 'CUST-2025-05587',
@@ -65,6 +76,10 @@ export const mockCustomers: Customer[] = [
     status: 'active',
     createdAt: '2023-03-10T09:00:00Z',
     lastOrderAt: '2025-06-11T11:30:00Z',
+    avatar: 'https://randomuser.me/api/portraits/women/47.jpg',
+    faceLeft: 'https://randomuser.me/api/portraits/women/47.jpg',
+    faceCenter: 'https://randomuser.me/api/portraits/women/48.jpg',
+    faceRight: 'https://randomuser.me/api/portraits/women/49.jpg',
   },
   {
     id: 'CUST-2025-05588',

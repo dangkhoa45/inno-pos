@@ -11,10 +11,12 @@ import DialogFormCustomer from './components/addCustomer/DialogFormCustomer'
 import CustomerInfo from './components/CustomerInfo'
 import ProductList from './components/ProductList'
 import ShoppingCart from './components/ShoppingCart'
+import FloatingCustomerAvatar from '../../components/FloatingCustomerAvatar'
 import SuccessDialog from '../../components/SuccessDialog'
 import { useOrder } from '../../stores/OrderContext'
 
-import type { CartItem, Customer, Product } from '../../types/sale'
+import type { Customer } from '../../mockup'
+import type { CartItem, Product } from '../../types/sale'
 
 const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
@@ -237,7 +239,6 @@ function SalePage() {
         </Grid>
       </Grid>
 
-      {/* Move DialogFormCustomer here */}
       <DialogFormCustomer
         open={openCreateCustomer}
         onClose={handleCloseCreateCustomer}
@@ -247,6 +248,8 @@ function SalePage() {
         open={successDialogOpen}
         onClose={handleCloseSuccessDialog}
       />
+
+      <FloatingCustomerAvatar customer={selectedCustomer} />
 
       <Snackbar
         open={alertOpen}

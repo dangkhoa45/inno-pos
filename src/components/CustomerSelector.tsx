@@ -196,6 +196,7 @@ const CustomerSelector = ({
                   variant="text"
                   startIcon={<SearchIcon sx={{ fontWeight: 900 }} />}
                   onClick={handleAdvancedSearchClick}
+                  onMouseDown={(e) => e.preventDefault()}
                   size="small"
                   sx={{
                     textTransform: 'none',
