@@ -1,10 +1,10 @@
 import { useState } from 'react'
-
+import RepairRequestModal from '../../components/RepairRequestModal'
+import ReceiptModal from '../../components/ReceiptModal'
 import DailyReportModal from '../../components/DailyReportModal'
 import ImportFileModal from '../../components/ImportFileModal'
-import ReceiptModal from '../../components/ReceiptModal'
-import RepairRequestModal from '../../components/RepairRequestModal'
 import SettingsDrawer from '../../components/SettingsDrawer'
+import ReturnModal from '../../components/ReturnModal'
 
 export const TestPage: React.FC = () => {
   const [email, setEmail] = useState('')
@@ -14,6 +14,7 @@ export const TestPage: React.FC = () => {
   const [dailyReportModalOpen, setDailyReportModalOpen] = useState(false)
   const [importModalOpen, setImportModalOpen] = useState(false)
   const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false)
+  const [returnModalOpen, setReturnModalOpen] = useState(false)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,7 +24,7 @@ export const TestPage: React.FC = () => {
 
   const handleRepairRequest = () => {
     setRepairModalOpen(true)
-  }
+    }
 
   const handleCreateReceipt = () => {
     setReceiptModalOpen(true)
@@ -31,57 +32,40 @@ export const TestPage: React.FC = () => {
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 16,
-          maxWidth: 400,
-          margin: '0 auto',
-          padding: 20,
-        }}
-      >
-        <form
-          onSubmit={handleLogin}
-          style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
-        >
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            style={{
-              padding: '8px 12px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-            }}
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            style={{
-              padding: '8px 12px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-            }}
-          />
-          <button
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 400, margin: '0 auto', padding: 20 }}>
+    <form
+      onSubmit={handleLogin}
+      style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+    >
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+            style={{ padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px' }}
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+            style={{ padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px' }}
+      />
+          <button 
             type="submit"
-            style={{
-              padding: '10px 16px',
-              backgroundColor: '#1976d2',
-              color: 'white',
-              border: 'none',
+            style={{ 
+              padding: '10px 16px', 
+              backgroundColor: '#1976d2', 
+              color: 'white', 
+              border: 'none', 
               borderRadius: '4px',
-              cursor: 'pointer',
+              cursor: 'pointer'
             }}
           >
             Login
           </button>
-        </form>
-
+    </form>
+        
         {/* Blue button for Repair Request */}
         <button
           onClick={handleRepairRequest}
@@ -95,19 +79,17 @@ export const TestPage: React.FC = () => {
             fontWeight: '500',
             cursor: 'pointer',
             boxShadow: '0 2px 4px rgba(30, 136, 229, 0.2)',
-            transition: 'all 0.2s ease',
+            transition: 'all 0.2s ease'
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.backgroundColor = '#1565c0'
             e.currentTarget.style.transform = 'translateY(-1px)'
-            e.currentTarget.style.boxShadow =
-              '0 4px 8px rgba(30, 136, 229, 0.3)'
+            e.currentTarget.style.boxShadow = '0 4px 8px rgba(30, 136, 229, 0.3)'
           }}
           onMouseOut={(e) => {
             e.currentTarget.style.backgroundColor = '#1e88e5'
             e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow =
-              '0 2px 4px rgba(30, 136, 229, 0.2)'
+            e.currentTarget.style.boxShadow = '0 2px 4px rgba(30, 136, 229, 0.2)'
           }}
         >
           Xử lý yêu cầu sửa chữa
@@ -126,62 +108,68 @@ export const TestPage: React.FC = () => {
             fontWeight: '500',
             cursor: 'pointer',
             boxShadow: '0 2px 4px rgba(33, 150, 243, 0.2)',
-            transition: 'all 0.2s ease',
+            transition: 'all 0.2s ease'
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.backgroundColor = '#1976d2'
             e.currentTarget.style.transform = 'translateY(-1px)'
-            e.currentTarget.style.boxShadow =
-              '0 4px 8px rgba(33, 150, 243, 0.3)'
+            e.currentTarget.style.boxShadow = '0 4px 8px rgba(33, 150, 243, 0.3)'
           }}
           onMouseOut={(e) => {
             e.currentTarget.style.backgroundColor = '#2196f3'
             e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow =
-              '0 2px 4px rgba(33, 150, 243, 0.2)'
+            e.currentTarget.style.boxShadow = '0 2px 4px rgba(33, 150, 243, 0.2)'
           }}
         >
           Tạo phiếu thu
         </button>
 
+        {/* Green button for Return Goods */}
+        <button
+          onClick={() => setReturnModalOpen(true)}
+          style={{
+            padding: '12px 20px',
+            backgroundColor: '#4caf50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            fontSize: '14px',
+            fontWeight: '500',
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(76, 175, 80, 0.2)',
+            transition: 'all 0.2s ease',
+            marginTop: 8,
+          }}
+           onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = '#388e3c'
+            e.currentTarget.style.transform = 'translateY(-1px)'
+            e.currentTarget.style.boxShadow = '0 4px 8px rgba(76, 175, 80, 0.3)'
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = '#4caf50'
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = '0 2px 4px rgba(76, 175, 80, 0.2)'
+          }}
+        >
+          Trả Hàng
+        </button>
+
         {/* Buttons for new modals */}
         <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-          <button
-            onClick={() => setImportModalOpen(true)}
-            style={{
-              flex: 1,
-              padding: '10px',
-              backgroundColor: '#673ab7',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
+          <button onClick={() => setImportModalOpen(true)} style={{ flex: 1, padding: '10px', backgroundColor: '#673ab7', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
             Mở Import
           </button>
-          <button
-            onClick={() => setSettingsDrawerOpen(true)}
-            style={{
-              flex: 1,
-              padding: '10px',
-              backgroundColor: '#ff9800',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
+          <button onClick={() => setSettingsDrawerOpen(true)} style={{ flex: 1, padding: '10px', backgroundColor: '#ff9800', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
             Mở Cài đặt
           </button>
         </div>
       </div>
-
+      
       <RepairRequestModal
         open={repairModalOpen}
         onClose={() => setRepairModalOpen(false)}
       />
-
+      
       <ReceiptModal
         open={receiptModalOpen}
         onClose={() => setReceiptModalOpen(false)}
@@ -200,6 +188,11 @@ export const TestPage: React.FC = () => {
       <SettingsDrawer
         open={settingsDrawerOpen}
         onClose={() => setSettingsDrawerOpen(false)}
+      />
+
+      <ReturnModal
+        open={returnModalOpen}
+        onClose={() => setReturnModalOpen(false)}
       />
     </>
   )
