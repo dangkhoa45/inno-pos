@@ -1,34 +1,81 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { CalendarToday, Close } from '@mui/icons-material'
-import PhotoCameraOutlined from '@mui/icons-material/PhotoCameraOutlined'
+import { Close } from '@mui/icons-material'
 import {
   Box,
   Button,
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControlLabel,
   Grid,
   IconButton,
-  Radio,
-  RadioGroup,
-  TextField,
   Typography,
 } from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+
+import AvatarUpload from '../../../../components/AvatarUpload'
+import FormField from '../../../../components/FormField'
 
 interface DialogFormCustomerProps {
   open: boolean
   onClose: () => void
 }
 
+interface CustomerFormData {
+  customerCode: string
+  lastName: string
+  taxCode: string
+  idNumber: string
+  birthDate: string
+  gender: string
+  email: string
+  phone: string
+  customerType: string
+  notes: string
+  address: string
+  region: string
+  ward: string
+}
+
 const DialogFormCustomer = ({ open, onClose }: DialogFormCustomerProps) => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [formData, setFormData] = useState<CustomerFormData>({
+    customerCode: '',
+    lastName: '',
+    taxCode: '',
+    idNumber: '',
+    birthDate: '',
+    gender: '',
+    email: '',
+    phone: '',
+    customerType: 'individual',
+    notes: '',
+    address: '',
+    region: '',
+    ward: '',
+  })
 
-  useEffect(() => {}, [open])
+  useEffect(() => {
+    if (open) {
+      setFormData({
+        customerCode: '',
+        lastName: '',
+        taxCode: '',
+        idNumber: '',
+        birthDate: '',
+        gender: '',
+        email: '',
+        phone: '',
+        customerType: 'individual',
+        notes: '',
+        address: '',
+        region: '',
+        ward: '',
+      })
+      setAvatarUrl(null)
+    }
+  }, [open])
 
   const handleClose = () => {
     onClose()
@@ -41,477 +88,177 @@ const DialogFormCustomer = ({ open, onClose }: DialogFormCustomerProps) => {
     }
   }
 
+  const handleFieldChange = (field: keyof CustomerFormData, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
+  }
+
+  const handleSave = () => {
+    // Handle save logic here
+    console.log('Saving customer data:', { ...formData, avatarUrl })
+    handleClose()
+  }
+
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      maxWidth="lg"
-      fullWidth
-      sx={{
-        '& .MuiDialog-paper': {
-          width: '100%',
-          maxWidth: '1200px',
-          px: 2,
-        },
-      }}
-    >
-      <DialogTitle
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          p: 2,
-        }}
-      >
-        <Typography
-          component="div"
-          sx={{ fontSize: '1.15rem', fontWeight: 700, color: 'primary.main' }}
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
+        <DialogTitle
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
         >
-          Thêm khách hàng mới
-        </Typography>
-        <IconButton onClick={handleClose} sx={{ color: 'text.secondary' }}>
-          <Close />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent sx={{ px: 4, py: 3 }}>
-        <Grid container spacing={6}>
-          <Grid
-            size={{ xs: 12, md: 2 }}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-              pt: 2,
-            }}
+          <Typography
+            component="div"
+            sx={{ fontSize: '1.15rem', fontWeight: 700, color: 'primary.main' }}
           >
-            <Box
+            Thêm khách hàng mới
+          </Typography>
+          <IconButton onClick={handleClose} sx={{ color: 'text.secondary' }}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ mt: 2 }}>
+          <Grid container spacing={4} alignItems="flex-start">
+            <Grid
+              size={{ xs: 12, md: 3 }}
               sx={{
-                width: 180,
-                height: 180,
-                borderRadius: '50%',
-                backgroundColor: '#dbdbdb',
                 display: 'flex',
-                alignItems: 'center',
                 justifyContent: 'center',
-                position: 'relative',
-                cursor: 'pointer',
-                transition: 'box-shadow 0.2s',
-                boxShadow: 1,
-                '&:hover': {
-                  boxShadow: 4,
-                  backgroundColor: '#d0d0d0',
-                },
-              }}
-              onClick={() => {
-                document.getElementById('customer-avatar-input')?.click()
+                alignItems: 'flex-start',
+                minHeight: 480,
               }}
             >
-              {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt="avatar"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    borderRadius: '50%',
-                  }}
-                />
-              ) : (
-                <PhotoCameraOutlined sx={{ fontSize: 72, color: '#888' }} />
-              )}
-              <input
-                id="customer-avatar-input"
-                type="file"
-                accept="image/*"
-                style={{ display: 'none' }}
-                onClick={(e) => e.stopPropagation()}
-                onChange={handleAvatarChange}
+              <AvatarUpload
+                avatarUrl={avatarUrl}
+                onAvatarChange={handleAvatarChange}
               />
-            </Box>
-          </Grid>
+            </Grid>
 
-          <Grid size={{ xs: 12, md: 10 }}>
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Mã khách hàng
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  value="Mã mặc định"
-                  disabled
-                  sx={{
-                    fontWeight: 600,
-                    background: '#f8f8f8',
-                    borderRadius: 2,
-                  }}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Tên khách hàng
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{ borderRadius: 2 }}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Số điện thoại
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{ borderRadius: 2 }}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Email
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{ borderRadius: 2 }}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Địa chỉ
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  placeholder="Số nhà, tòa nhà, ngõ, đường"
-                  sx={{ borderRadius: 2 }}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Khu vực
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  placeholder="Chọn Tỉnh/TP - Quận/Huyện"
-                  sx={{ borderRadius: 2 }}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Phường/Xã
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  placeholder="Chọn Phường/Xã"
-                  sx={{ borderRadius: 2 }}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-end' }}>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontWeight: 500,
-                        color: '#666',
-                        mb: 0.5,
-                        display: 'block',
-                      }}
-                    >
-                      Ngày sinh
-                    </Typography>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        sx={{ width: '100%' }}
-                        slotProps={{
-                          textField: {
-                            variant: 'outlined',
-                            size: 'small',
-                            sx: { borderRadius: 2 },
-                          },
-                          openPickerButton: {
-                            children: <CalendarToday fontSize="small" />,
-                          },
-                        }}
-                      />
-                    </LocalizationProvider>
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontWeight: 500,
-                        color: '#666',
-                        mb: 0.5,
-                        display: 'block',
-                      }}
-                    >
-                      Giới tính
-                    </Typography>
-                    <RadioGroup row name="gender">
-                      <FormControlLabel
-                        value="male"
-                        control={<Radio size="small" />}
-                        label={
-                          <Typography
-                            variant="body2"
-                            sx={{ fontSize: '0.95rem' }}
-                          >
-                            Nam
-                          </Typography>
-                        }
-                      />
-                      <FormControlLabel
-                        value="female"
-                        control={<Radio size="small" />}
-                        label={
-                          <Typography
-                            variant="body2"
-                            sx={{ fontSize: '0.95rem' }}
-                          >
-                            Nữ
-                          </Typography>
-                        }
-                      />
-                    </RadioGroup>
-                  </Box>
-                </Box>
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Loại khách
-                </Typography>
-                <RadioGroup row defaultValue="individual">
-                  <FormControlLabel
-                    value="individual"
-                    control={<Radio size="small" />}
-                    label={
-                      <Typography variant="body2" sx={{ fontSize: '0.95rem' }}>
-                        Cá nhân
-                      </Typography>
-                    }
+            <Grid size={{ xs: 12, md: 9 }}>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <FormField
+                    label="Mã khách hàng"
+                    value={formData.customerCode}
+                    onChange={(v) => handleFieldChange('customerCode', v)}
                   />
-                  <FormControlLabel
-                    value="company"
-                    control={<Radio size="small" />}
-                    label={
-                      <Typography variant="body2" sx={{ fontSize: '0.95rem' }}>
-                        Công ty
-                      </Typography>
-                    }
+                  <Box mt={2} />
+                  <FormField
+                    label="Họ"
+                    value={formData.lastName}
+                    onChange={(v) => handleFieldChange('lastName', v)}
                   />
-                </RadioGroup>
-              </Grid>
+                  <Box mt={2} />
+                  <FormField
+                    label="Ngày sinh"
+                    type="date"
+                    value={formData.birthDate}
+                    onChange={(v) => handleFieldChange('birthDate', v)}
+                  />
+                  <Box mt={2} />
+                  <FormField
+                    label="Số điện thoại"
+                    value={formData.phone}
+                    onChange={(v) => handleFieldChange('phone', v)}
+                  />
+                  <Box mt={2} />
+                  <FormField
+                    label="Địa chỉ"
+                    value={formData.address}
+                    onChange={(v) => handleFieldChange('address', v)}
+                  />
+                  <Box mt={2} />
+                  <FormField
+                    label="Khu vực"
+                    value={formData.region}
+                    onChange={(v) => handleFieldChange('region', v)}
+                  />
+                  <Box mt={2} />
+                  <FormField
+                    label="Phường/Xã"
+                    value={formData.ward}
+                    onChange={(v) => handleFieldChange('ward', v)}
+                  />
+                </Grid>
 
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Mã số thuế
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{ borderRadius: 2 }}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Số CMND/CCCD
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{ borderRadius: 2 }}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Facebook
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{ borderRadius: 2 }}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Nhóm
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{ borderRadius: 2 }}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: '#666',
-                    mb: 0.5,
-                    display: 'block',
-                  }}
-                >
-                  Ghi chú
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  multiline
-                  rows={2}
-                  sx={{ borderRadius: 2 }}
-                />
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <FormField
+                    label="Mã số thuế"
+                    value={formData.taxCode}
+                    onChange={(v) => handleFieldChange('taxCode', v)}
+                  />
+                  <Box mt={2} />
+                  <FormField
+                    label="Số CMND/CCCD"
+                    value={formData.idNumber}
+                    onChange={(v) => handleFieldChange('idNumber', v)}
+                  />
+                  <Box mt={2} />
+                  <FormField
+                    label="Giới tính"
+                    type="radio"
+                    radioOptions={[
+                      { value: 'male', label: 'Nam' },
+                      { value: 'female', label: 'Nữ' },
+                    ]}
+                    radioDefaultValue={formData.gender}
+                    radioName="gender"
+                    onChange={(v) => handleFieldChange('gender', v)}
+                  />
+                  <Box mt={2} />
+                  <FormField
+                    label="Email"
+                    value={formData.email}
+                    onChange={(v) => handleFieldChange('email', v)}
+                  />
+                  <Box mt={2} />
+                  <FormField
+                    label="Loại khách"
+                    type="radio"
+                    radioOptions={[
+                      { value: 'individual', label: 'Cá nhân' },
+                      { value: 'company', label: 'Công ty' },
+                    ]}
+                    radioDefaultValue={formData.customerType}
+                    radioName="customerType"
+                    onChange={(v) => handleFieldChange('customerType', v)}
+                  />
+                  <Box mt={2} />
+                  <FormField
+                    label="Ghi chú"
+                    value={formData.notes}
+                    onChange={(v) => handleFieldChange('notes', v)}
+                  />
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 0, py: 3 }}>
-          <Button
-            variant="contained"
-            onClick={handleClose}
-            sx={{
-              textTransform: 'none',
-              px: 5,
-              py: 1.5,
-              fontWeight: 600,
-              fontSize: '1rem',
-              borderRadius: 2,
-              boxShadow: 2,
-            }}
+          <Box
+            sx={{ display: 'flex', justifyContent: 'flex-end', px: 0, py: 3 }}
           >
-            Lưu
-          </Button>
-        </Box>
-      </DialogContent>
-    </Dialog>
+            <Button
+              variant="contained"
+              onClick={handleSave}
+              sx={{
+                px: 4,
+                py: 1,
+                textTransform: 'none',
+                fontWeight: 600,
+                fontSize: '1rem',
+                borderRadius: 2,
+                boxShadow: 2,
+              }}
+            >
+              Xác nhận
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    </LocalizationProvider>
   )
 }
 

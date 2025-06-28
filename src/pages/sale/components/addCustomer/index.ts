@@ -1,0 +1,5 @@
+export { default as DialogFormCustomer } from './DialogFormCustomer'
+export { default as CustomerBasicInfo } from './CustomerBasicInfo'
+export { default as CustomerAddressInfo } from './CustomerAddressInfo'
+export { default as CustomerPersonalInfo } from './CustomerPersonalInfo'
+export { default as CustomerAdditionalInfo } from './CustomerAdditionalInfo'
