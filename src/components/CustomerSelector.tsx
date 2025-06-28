@@ -33,6 +33,12 @@ const CustomerSelector = ({
   const [inputValue, setInputValue] = useState('')
   const [open, setOpen] = useState(false)
 
+  const handleAdvancedSearchClick = () => {
+    if (onAdvancedSearch && typeof onAdvancedSearch === 'function') {
+      onAdvancedSearch()
+    }
+  }
+
   return (
     <Box sx={{ position: 'relative', zIndex: 1000, m: 2, mt: 2.5 }}>
       <Autocomplete
@@ -157,7 +163,12 @@ const CustomerSelector = ({
               <Button
                 variant="text"
                 startIcon={<AddIcon sx={{ fontWeight: 900 }} />}
-                onClick={onCreateNew}
+                onMouseDown={(e) => {
+                  e.stopPropagation()
+                  if (typeof onCreateNew === 'function') {
+                    onCreateNew()
+                  }
+                }}
                 sx={{
                   textTransform: 'none',
                   minWidth: 'auto',
@@ -184,7 +195,7 @@ const CustomerSelector = ({
                 <Button
                   variant="text"
                   startIcon={<SearchIcon sx={{ fontWeight: 900 }} />}
-                  onClick={onAdvancedSearch}
+                  onClick={handleAdvancedSearchClick}
                   size="small"
                   sx={{
                     textTransform: 'none',

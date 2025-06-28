@@ -13,9 +13,13 @@ import { mockCustomers, type Customer } from '../../../mockup'
 
 interface CustomerInfoProps {
   onCustomerChange?: (customer: Customer | null) => void
+  onCreateNewCustomer?: () => void
 }
 
-const CustomerInfo = ({ onCustomerChange }: CustomerInfoProps) => {
+const CustomerInfo = ({
+  onCustomerChange,
+  onCreateNewCustomer,
+}: CustomerInfoProps) => {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null,
   )
@@ -31,13 +35,13 @@ const CustomerInfo = ({ onCustomerChange }: CustomerInfoProps) => {
   }
 
   const handleCreateNewCustomer = () => {
-    // TODO: Open create customer dialog
-    console.log('Open create customer dialog')
+    if (typeof onCreateNewCustomer === 'function') {
+      onCreateNewCustomer()
+    }
   }
 
   const handleAdvancedSearch = () => {
     // TODO: Open advanced search dialog
-    console.log('Open advanced search dialog')
   }
 
   return (

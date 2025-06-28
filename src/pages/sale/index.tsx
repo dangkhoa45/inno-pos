@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid'
 import Snackbar from '@mui/material/Snackbar'
 import { useNavigate } from '@tanstack/react-router'
 
+import DialogFormCustomer from './components/addCustomer/DialogFormCustomer'
 import CustomerInfo from './components/CustomerInfo'
 import ProductList from './components/ProductList'
 import ShoppingCart from './components/ShoppingCart'
@@ -81,23 +82,14 @@ const useCart = () => {
 }
 
 const processCheckout = async (
-  customer: Customer | null,
-  cartItems: CartItem[],
-  total: number,
+  _customer: Customer | null,
+  _cartItems: CartItem[],
+  _total: number,
 ) => {
   try {
-    console.log('Processing checkout:', {
-      customer,
-      items: cartItems,
-      total,
-      timestamp: new Date().toISOString(),
-    })
-
     await new Promise((resolve) => setTimeout(resolve, 1000))
-
     return { success: true, message: 'Payment successful!' }
-  } catch (error) {
-    console.error('Checkout error:', error)
+  } catch (_error) {
     return { success: false, message: 'Payment failed!' }
   }
 }
@@ -124,9 +116,20 @@ function SalePage() {
   const [alertSeverity, setAlertSeverity] = useState<'error' | 'warning'>(
     'error',
   )
+  // State for create customer dialog
+  const [openCreateCustomer, setOpenCreateCustomer] = useState(false)
 
   const handleCustomerChange = (customer: Customer | null) => {
     setSelectedCustomer(customer)
+  }
+
+  // Callback to open create customer dialog
+  const handleCreateNewCustomer = () => {
+    setOpenCreateCustomer(true)
+  }
+
+  const handleCloseCreateCustomer = () => {
+    setOpenCreateCustomer(false)
   }
 
   const handleCheckout = async () => {
@@ -160,7 +163,6 @@ function SalePage() {
         timestamp: new Date().toISOString(),
       }
 
-      console.log('Sale page - Saving orderData to context:', orderData)
       setOrderData(orderData)
 
       const result = await processCheckout(selectedCustomer, cartItems, total)
@@ -173,8 +175,7 @@ function SalePage() {
         setAlertSeverity('error')
         setAlertOpen(true)
       }
-    } catch (error) {
-      console.error('Checkout error:', error)
+    } catch (_error) {
       setAlertMessage('An error occurred during checkout!')
       setAlertSeverity('error')
       setAlertOpen(true)
@@ -219,7 +220,10 @@ function SalePage() {
           }}
         >
           <Box sx={{ mb: 2 }}>
-            <CustomerInfo onCustomerChange={handleCustomerChange} />
+            <CustomerInfo
+              onCustomerChange={handleCustomerChange}
+              onCreateNewCustomer={handleCreateNewCustomer}
+            />
           </Box>
 
           <Box sx={{ flexGrow: 1, minHeight: 0 }}>
@@ -232,6 +236,12 @@ function SalePage() {
           </Box>
         </Grid>
       </Grid>
+
+      {/* Move DialogFormCustomer here */}
+      <DialogFormCustomer
+        open={openCreateCustomer}
+        onClose={handleCloseCreateCustomer}
+      />
 
       <SuccessDialog
         open={successDialogOpen}
