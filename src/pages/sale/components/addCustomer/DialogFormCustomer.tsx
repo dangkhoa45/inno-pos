@@ -40,6 +40,11 @@ interface CustomerFormData {
 
 const DialogFormCustomer = ({ open, onClose }: DialogFormCustomerProps) => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [faceImages, setFaceImages] = useState<{
+    left: string | null
+    center: string | null
+    right: string | null
+  }>({ left: null, center: null, right: null })
   const [formData, setFormData] = useState<CustomerFormData>({
     customerCode: '',
     lastName: '',
@@ -74,6 +79,7 @@ const DialogFormCustomer = ({ open, onClose }: DialogFormCustomerProps) => {
         ward: '',
       })
       setAvatarUrl(null)
+      setFaceImages({ left: null, center: null, right: null })
     }
   }, [open])
 
@@ -88,6 +94,15 @@ const DialogFormCustomer = ({ open, onClose }: DialogFormCustomerProps) => {
     }
   }
 
+  const handleFaceImagesChange = (images: {
+    left: string | null
+    center: string | null
+    right: string | null
+  }) => {
+    setFaceImages(images)
+    setAvatarUrl(images.center || null)
+  }
+
   const handleFieldChange = (field: keyof CustomerFormData, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -97,7 +112,7 @@ const DialogFormCustomer = ({ open, onClose }: DialogFormCustomerProps) => {
 
   const handleSave = () => {
     // Handle save logic here
-    console.log('Saving customer data:', { ...formData, avatarUrl })
+    console.log('Saving customer data:', { ...formData, avatarUrl, faceImages })
     handleClose()
   }
 
@@ -135,6 +150,7 @@ const DialogFormCustomer = ({ open, onClose }: DialogFormCustomerProps) => {
               <AvatarUpload
                 avatarUrl={avatarUrl}
                 onAvatarChange={handleAvatarChange}
+                onFaceImagesChange={handleFaceImagesChange}
               />
             </Grid>
 
