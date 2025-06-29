@@ -8,160 +8,68 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrahangRouteImport } from './routes/trahang'
+import { Route as TestRouteImport } from './routes/test'
+import { Route as SaleRouteImport } from './routes/sale'
+import { Route as RepairAddRouteImport } from './routes/repair-add'
+import { Route as RepairRouteImport } from './routes/repair'
+import { Route as PaymentRouteImport } from './routes/payment'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as PostsIndexRouteImport } from './routes/posts/index'
+import { Route as PostsAddRouteImport } from './routes/posts/add'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as TrahangImport } from './routes/trahang'
-import { Route as TestImport } from './routes/test'
-import { Route as SaleImport } from './routes/sale'
-import { Route as RepairAddImport } from './routes/repair-add'
-import { Route as RepairImport } from './routes/repair'
-import { Route as PaymentImport } from './routes/payment'
-import { Route as AboutImport } from './routes/about'
-import { Route as IndexImport } from './routes/index'
-import { Route as PostsIndexImport } from './routes/posts/index'
-import { Route as PostsAddImport } from './routes/posts/add'
-
-// Create/Update Routes
-
-const TrahangRoute = TrahangImport.update({
+const TrahangRoute = TrahangRouteImport.update({
   id: '/trahang',
   path: '/trahang',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const TestRoute = TestImport.update({
+const TestRoute = TestRouteImport.update({
   id: '/test',
   path: '/test',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const SaleRoute = SaleImport.update({
+const SaleRoute = SaleRouteImport.update({
   id: '/sale',
   path: '/sale',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const RepairAddRoute = RepairAddImport.update({
+const RepairAddRoute = RepairAddRouteImport.update({
   id: '/repair-add',
   path: '/repair-add',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const RepairRoute = RepairImport.update({
+const RepairRoute = RepairRouteImport.update({
   id: '/repair',
   path: '/repair',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const PaymentRoute = PaymentImport.update({
+const PaymentRoute = PaymentRouteImport.update({
   id: '/payment',
   path: '/payment',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AboutRoute = AboutImport.update({
+const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const PostsIndexRoute = PostsIndexImport.update({
+const PostsIndexRoute = PostsIndexRouteImport.update({
   id: '/posts/',
   path: '/posts/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const PostsAddRoute = PostsAddImport.update({
+const PostsAddRoute = PostsAddRouteImport.update({
   id: '/posts/add',
   path: '/posts/add',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
-    '/payment': {
-      id: '/payment'
-      path: '/payment'
-      fullPath: '/payment'
-      preLoaderRoute: typeof PaymentImport
-      parentRoute: typeof rootRoute
-    }
-    '/repair': {
-      id: '/repair'
-      path: '/repair'
-      fullPath: '/repair'
-      preLoaderRoute: typeof RepairImport
-      parentRoute: typeof rootRoute
-    }
-    '/repair-add': {
-      id: '/repair-add'
-      path: '/repair-add'
-      fullPath: '/repair-add'
-      preLoaderRoute: typeof RepairAddImport
-      parentRoute: typeof rootRoute
-    }
-    '/sale': {
-      id: '/sale'
-      path: '/sale'
-      fullPath: '/sale'
-      preLoaderRoute: typeof SaleImport
-      parentRoute: typeof rootRoute
-    }
-    '/test': {
-      id: '/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestImport
-      parentRoute: typeof rootRoute
-    }
-    '/trahang': {
-      id: '/trahang'
-      path: '/trahang'
-      fullPath: '/trahang'
-      preLoaderRoute: typeof TrahangImport
-      parentRoute: typeof rootRoute
-    }
-    '/posts/add': {
-      id: '/posts/add'
-      path: '/posts/add'
-      fullPath: '/posts/add'
-      preLoaderRoute: typeof PostsAddImport
-      parentRoute: typeof rootRoute
-    }
-    '/posts/': {
-      id: '/posts/'
-      path: '/posts'
-      fullPath: '/posts'
-      preLoaderRoute: typeof PostsIndexImport
-      parentRoute: typeof rootRoute
-    }
-  }
-}
-
-// Create and export the route tree
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -175,7 +83,6 @@ export interface FileRoutesByFullPath {
   '/posts/add': typeof PostsAddRoute
   '/posts': typeof PostsIndexRoute
 }
-
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
@@ -188,9 +95,8 @@ export interface FileRoutesByTo {
   '/posts/add': typeof PostsAddRoute
   '/posts': typeof PostsIndexRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute
+  __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/payment': typeof PaymentRoute
@@ -202,7 +108,6 @@ export interface FileRoutesById {
   '/posts/add': typeof PostsAddRoute
   '/posts/': typeof PostsIndexRoute
 }
-
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
@@ -242,7 +147,6 @@ export interface FileRouteTypes {
     | '/posts/'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
@@ -254,6 +158,81 @@ export interface RootRouteChildren {
   TrahangRoute: typeof TrahangRoute
   PostsAddRoute: typeof PostsAddRoute
   PostsIndexRoute: typeof PostsIndexRoute
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/trahang': {
+      id: '/trahang'
+      path: '/trahang'
+      fullPath: '/trahang'
+      preLoaderRoute: typeof TrahangRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sale': {
+      id: '/sale'
+      path: '/sale'
+      fullPath: '/sale'
+      preLoaderRoute: typeof SaleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/repair-add': {
+      id: '/repair-add'
+      path: '/repair-add'
+      fullPath: '/repair-add'
+      preLoaderRoute: typeof RepairAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/repair': {
+      id: '/repair'
+      path: '/repair'
+      fullPath: '/repair'
+      preLoaderRoute: typeof RepairRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment': {
+      id: '/payment'
+      path: '/payment'
+      fullPath: '/payment'
+      preLoaderRoute: typeof PaymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/posts/': {
+      id: '/posts/'
+      path: '/posts'
+      fullPath: '/posts'
+      preLoaderRoute: typeof PostsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/posts/add': {
+      id: '/posts/add'
+      path: '/posts/add'
+      fullPath: '/posts/add'
+      preLoaderRoute: typeof PostsAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -268,59 +247,6 @@ const rootRouteChildren: RootRouteChildren = {
   PostsAddRoute: PostsAddRoute,
   PostsIndexRoute: PostsIndexRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/about",
-        "/payment",
-        "/repair",
-        "/repair-add",
-        "/sale",
-        "/test",
-        "/trahang",
-        "/posts/add",
-        "/posts/"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/about": {
-      "filePath": "about.tsx"
-    },
-    "/payment": {
-      "filePath": "payment.tsx"
-    },
-    "/repair": {
-      "filePath": "repair.tsx"
-    },
-    "/repair-add": {
-      "filePath": "repair-add.tsx"
-    },
-    "/sale": {
-      "filePath": "sale.tsx"
-    },
-    "/test": {
-      "filePath": "test.tsx"
-    },
-    "/trahang": {
-      "filePath": "trahang.tsx"
-    },
-    "/posts/add": {
-      "filePath": "posts/add.tsx"
-    },
-    "/posts/": {
-      "filePath": "posts/index.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
