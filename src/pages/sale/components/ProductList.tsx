@@ -47,7 +47,7 @@ const ProductList = ({ onAddToCart, cartItems }: ProductListProps) => {
     <Paper
       elevation={0}
       sx={{
-        height: 'calc(100vh - 110px)',
+        height: { xs: '100%', sm: '100%' },
         width: '100%',
         border: 1,
         borderColor: 'divider',
@@ -60,9 +60,9 @@ const ProductList = ({ onAddToCart, cartItems }: ProductListProps) => {
 
       <Box
         sx={{
-          p: 1,
-          m: 1,
-          height: 'calc(100% - 110px)',
+          p: { xs: 0.5, sm: 1 },
+          m: { xs: 0.5, sm: 1 },
+          height: { xs: 'calc(100% - 80px)', sm: 'calc(100% - 110px)' },
           overflow: 'auto',
           '&::-webkit-scrollbar': {
             width: '8px',
@@ -76,10 +76,10 @@ const ProductList = ({ onAddToCart, cartItems }: ProductListProps) => {
           },
         }}
       >
-        <Grid container spacing={2}>
+        <Grid container spacing={{ xs: 1, sm: 2 }}>
           {filteredProducts.map((product) => (
             <Grid
-              size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 3 }}
+              size={{ xs: 6, sm: 6, md: 4, lg: 3, xl: 3 }}
               key={product.id}
               sx={{ display: 'flex' }}
             >
@@ -98,7 +98,7 @@ const ProductList = ({ onAddToCart, cartItems }: ProductListProps) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              height: '200px',
+              height: { xs: '150px', sm: '200px' },
               color: 'text.secondary',
             }}
           >

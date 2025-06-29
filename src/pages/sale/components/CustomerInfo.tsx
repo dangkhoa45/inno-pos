@@ -71,7 +71,11 @@ const CustomerInfo = ({
 
   return (
     <Paper
-      sx={{ border: 1, borderColor: 'divider', height: '80px' }}
+      sx={{
+        border: 1,
+        borderColor: 'divider',
+        height: { xs: '60px', sm: '80px' },
+      }}
       elevation={0}
     >
       <Box>
@@ -87,21 +91,29 @@ const CustomerInfo = ({
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: 2,
-              m: 2,
+              gap: { xs: 1, sm: 2 },
+              m: { xs: 1, sm: 2 },
             }}
           >
             <Avatar
               src={selectedCustomer.avatar}
-              sx={{ width: 48, height: 48 }}
+              sx={{ width: { xs: 32, sm: 48 }, height: { xs: 32, sm: 48 } }}
             >
               {!selectedCustomer.avatar && <PersonIcon />}
             </Avatar>
             <Box sx={{ flex: 1 }}>
-              <Typography variant="h6" component="div">
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ fontSize: { xs: '0.9rem', sm: '1.25rem' } }}
+              >
                 {selectedCustomer.name}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }}
+              >
                 {selectedCustomer.phone}
               </Typography>
             </Box>

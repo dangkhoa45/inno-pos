@@ -168,14 +168,22 @@ const ProductListHeader = ({
   }
 
   return (
-    <Box sx={{ pt: 2, px: 2, borderBottom: 1, borderColor: 'divider' }}>
+    <Box
+      sx={{
+        pt: { xs: 1, sm: 2 },
+        px: { xs: 1, sm: 2 },
+        borderBottom: 1,
+        borderColor: 'divider',
+      }}
+    >
       <Box
         sx={{
           display: 'flex',
-          gap: 2,
+          gap: { xs: 1, sm: 2 },
           alignItems: 'center',
-          mb: 2,
+          mb: { xs: 1, sm: 2 },
           justifyContent: 'space-between',
+          flexDirection: { xs: 'column', sm: 'row' },
         }}
       >
         <Autocomplete
@@ -212,7 +220,10 @@ const ProductListHeader = ({
               {...params}
               placeholder="Search"
               size="small"
-              sx={{ minWidth: 300 }}
+              sx={{
+                minWidth: { xs: '100%', sm: 300 },
+                width: { xs: '100%', sm: 'auto' },
+              }}
               InputProps={{
                 ...params.InputProps,
                 startAdornment: <SearchIcon color="action" sx={{ pl: 1 }} />,
@@ -220,10 +231,11 @@ const ProductListHeader = ({
             />
           )}
         />
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 } }}>
           <IconButton
             onClick={handleOpenFilterPopover}
             color={getActiveFilterCount() > 0 ? 'primary' : 'default'}
+            size="small"
           >
             <FilterListIcon />
           </IconButton>

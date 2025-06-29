@@ -35,7 +35,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
       onClick={handleAddToCart}
       sx={{
         width: '100%',
-        height: '100%',
+        height: { xs: '140px', sm: '160px', md: '180px' },
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
@@ -65,9 +65,10 @@ const ProductItem: React.FC<ProductItemProps> = ({
         size="small"
         sx={{
           position: 'absolute',
-          top: 8,
-          right: 8,
+          top: { xs: 4, sm: 8 },
+          right: { xs: 4, sm: 8 },
           zIndex: 1,
+          fontSize: { xs: '0.7rem', sm: '0.75rem' },
           backgroundColor:
             product.stock > 0
               ? theme.palette.success.light
@@ -86,26 +87,37 @@ const ProductItem: React.FC<ProductItemProps> = ({
       <CardMedia
         component="div"
         sx={{
-          height: 120,
+          height: { xs: 60, sm: 80, md: 120 },
           backgroundColor: theme.palette.grey[100],
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <Typography variant="caption" color="text.secondary">
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ fontSize: { xs: '0.6rem', sm: '0.75rem' } }}
+        >
           Product Image
         </Typography>
       </CardMedia>
       <CardContent
         sx={{
           flexGrow: 1,
-          p: 1,
+          p: { xs: 0.5, sm: 1 },
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        <Typography variant="body2" noWrap sx={{ mb: 1 }}>
+        <Typography
+          variant="body2"
+          noWrap
+          sx={{
+            mb: { xs: 0.5, sm: 1 },
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+          }}
+        >
           {product.name}
         </Typography>
         <Box
@@ -116,7 +128,11 @@ const ProductItem: React.FC<ProductItemProps> = ({
             mt: 'auto',
           }}
         >
-          <Typography variant="body2" fontWeight="700">
+          <Typography
+            variant="body2"
+            fontWeight="700"
+            sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }}
+          >
             {product.price > 0
               ? `VND ${product.price.toLocaleString()}`
               : 'Free'}

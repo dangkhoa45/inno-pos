@@ -195,33 +195,55 @@ function SalePage() {
       maxWidth={false}
       disableGutters
       sx={{
-        height: 'calc(100vh - 110px)',
+        height: { xs: 'calc(100vh - 80px)', sm: 'calc(100vh - 110px)' },
         width: '100%',
         overflow: 'hidden',
+        px: { xs: 1, sm: 2 },
+        py: { xs: 1, sm: 2 },
       }}
     >
       <Grid
         container
-        spacing={2}
+        spacing={{ xs: 1, sm: 2 }}
         sx={{
           height: '100%',
           width: '100%',
         }}
       >
-        <Grid size={{ xs: 12, md: 7 }}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 12,
+            md: 8,
+            lg: 7,
+          }}
+          sx={{
+            height: { xs: '60vh', sm: '70vh', md: '100%' },
+            mb: { xs: 2, md: 0 },
+          }}
+        >
           <ProductList onAddToCart={addToCart} cartItems={cartItems} />
         </Grid>
 
         <Grid
-          size={{ xs: 12, md: 5 }}
+          size={{
+            xs: 12,
+            sm: 12,
+            md: 4,
+            lg: 5,
+          }}
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            height: '100%',
+            height: {
+              xs: 'calc(40vh - 32px)',
+              sm: 'calc(30vh - 32px)',
+              md: '100%',
+            },
             minHeight: 0,
           }}
         >
-          <Box sx={{ mb: 2 }}>
+          <Box sx={{ mb: { xs: 1, sm: 2 } }}>
             <CustomerInfo
               onCustomerChange={handleCustomerChange}
               onCreateNewCustomer={handleCreateNewCustomer}

@@ -75,17 +75,31 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
     >
       <CardContent
         sx={{
-          flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          p: 2,
-          '&:last-child': { pb: 2 },
+          flexGrow: 1,
+          minHeight: 0,
+          p: { xs: 1, sm: 2 },
+          '&:last-child': { pb: { xs: 1, sm: 2 } },
+          height: '100%',
         }}
       >
-        <Typography variant="body1" fontWeight="bold" mb={1}>
+        <Typography
+          variant="body1"
+          fontWeight="bold"
+          mb={1}
+          sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
+        >
           Item Cart
         </Typography>
-        <Box sx={{ overflow: 'auto', flexGrow: 1, height: 280, mx: -1, px: 1 }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            minHeight: 0,
+            overflow: 'auto',
+            mb: { xs: 1, sm: 2 },
+          }}
+        >
           {cartItems.length === 0 ? (
             <Box
               sx={{
@@ -95,13 +109,21 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                py: 4,
+                py: { xs: 2, sm: 4 },
               }}
             >
               <ShoppingCartIcon
-                sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }}
+                sx={{
+                  fontSize: { xs: 32, sm: 48 },
+                  color: 'text.secondary',
+                  mb: { xs: 1, sm: 2 },
+                }}
               />
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
                 No items in the cart
               </Typography>
             </Box>
@@ -109,8 +131,8 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
             <Box
               sx={{
                 flexGrow: 1,
+                minHeight: 0,
                 overflow: 'auto',
-                mb: 2,
                 '&::-webkit-scrollbar': {
                   width: '8px',
                 },
@@ -152,7 +174,14 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                             justifyContent: 'space-between',
                           }}
                         >
-                          <Typography variant="body2" noWrap>
+                          <Typography
+                            variant="body2"
+                            noWrap
+                            sx={{
+                              fontSize: { xs: '0.7rem', sm: '0.875rem' },
+                              maxWidth: { xs: '60%', sm: '70%' },
+                            }}
+                          >
                             {item.product.name}
                           </Typography>
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -164,17 +193,19 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                                   item.quantity - 1,
                                 )
                               }
-                              sx={{ p: 0.25 }}
+                              sx={{ p: { xs: 0.25, sm: 0.25 } }}
                             >
-                              <RemoveIcon sx={{ fontSize: 14 }} />
+                              <RemoveIcon
+                                sx={{ fontSize: { xs: 12, sm: 14 } }}
+                              />
                             </IconButton>
                             <Typography
                               variant="caption"
                               sx={{
                                 mx: 0.5,
-                                minWidth: 16,
+                                minWidth: { xs: 12, sm: 16 },
                                 textAlign: 'center',
-                                fontSize: '0.75rem',
+                                fontSize: { xs: '0.65rem', sm: '0.75rem' },
                               }}
                             >
                               {item.quantity}
@@ -187,9 +218,9 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                                   item.quantity + 1,
                                 )
                               }
-                              sx={{ p: 0.25 }}
+                              sx={{ p: { xs: 0.25, sm: 0.25 } }}
                             >
-                              <AddIcon sx={{ fontSize: 14 }} />
+                              <AddIcon sx={{ fontSize: { xs: 12, sm: 14 } }} />
                             </IconButton>
                           </Box>
                         </Box>
@@ -207,7 +238,10 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                           <Typography
                             variant="caption"
                             fontWeight="bold"
-                            sx={{ display: 'block', fontSize: '0.75rem' }}
+                            sx={{
+                              display: 'block',
+                              fontSize: { xs: '0.65rem', sm: '0.75rem' },
+                            }}
                           >
                             VND{' '}
                             {(
@@ -219,9 +253,9 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                           size="small"
                           color="error"
                           onClick={() => onRemoveItem(item.product.id)}
-                          sx={{ p: 0.25 }}
+                          sx={{ p: { xs: 0.25, sm: 0.25 } }}
                         >
-                          <DeleteIcon sx={{ fontSize: 16 }} />
+                          <DeleteIcon sx={{ fontSize: { xs: 14, sm: 16 } }} />
                         </IconButton>
                       </Box>
                     </Box>
@@ -231,8 +265,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
             </Box>
           )}
         </Box>
-        <Divider sx={{ mb: 1.5 }} />
-
+        <Divider sx={{ mb: { xs: 1, sm: 1.5 } }} />
         <DiscountSection
           discount={discount}
           discountType={discountType}
@@ -240,8 +273,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
           onDiscountTypeChange={setDiscountType}
           disabled={cartItems.length === 0}
         />
-
-        <Box sx={{ mb: 1.5 }}>
+        <Box sx={{ mt: { xs: 1, sm: 1.5 } }}>
           <Box
             sx={{
               display: 'flex',
@@ -249,12 +281,20 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
               mb: 0.5,
             }}
           >
-            <Typography variant="body2">Total Quantity</Typography>
-            <Typography variant="body2" fontWeight="bold">
+            <Typography
+              variant="body2"
+              sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+            >
+              Total Quantity
+            </Typography>
+            <Typography
+              variant="body2"
+              fontWeight="bold"
+              sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+            >
               {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
             </Typography>
           </Box>
-
           <Box
             sx={{
               display: 'flex',
@@ -262,12 +302,19 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
               mb: 0.5,
             }}
           >
-            <Typography variant="body2">Net total</Typography>
-            <Typography variant="body2">
+            <Typography
+              variant="body2"
+              sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+            >
+              Net total
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+            >
               VND {subtotal.toLocaleString()}
             </Typography>
           </Box>
-
           {discountAmount > 0 && (
             <Box
               sx={{
@@ -276,47 +323,60 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                 mb: 0.5,
               }}
             >
-              <Typography variant="body2" color="error">
+              <Typography
+                variant="body2"
+                color="error"
+                sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
                 Discount
               </Typography>
-              <Typography variant="body2" color="error">
+              <Typography
+                variant="body2"
+                color="error"
+                sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
                 -{discountAmount.toLocaleString()}
               </Typography>
             </Box>
           )}
-
-          <Divider sx={{ my: 1 }} />
-
+          <Divider sx={{ my: { xs: 0.5, sm: 1 } }} />
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
-              mb: 1.5,
+              mb: { xs: 1, sm: 1.5 },
             }}
           >
-            <Typography variant="h6" fontWeight="bold">
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}
+            >
               Grand Total
             </Typography>
-            <Typography variant="h6" fontWeight="bold">
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}
+            >
               VND {total.toLocaleString()}
             </Typography>
           </Box>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={onCheckout}
+            fullWidth
+            disabled={cartItems.length === 0}
+            sx={{
+              py: { xs: 1, sm: 1.5 },
+              fontSize: { xs: '0.9rem', sm: '1.1rem' },
+              fontWeight: 'bold',
+            }}
+          >
+            Checkout
+          </Button>
         </Box>
-
-        <Button
-          variant="contained"
-          size="large"
-          onClick={onCheckout}
-          fullWidth
-          disabled={cartItems.length === 0}
-          sx={{
-            py: 1.5,
-            fontSize: '1.1rem',
-            fontWeight: 'bold',
-          }}
-        >
-          Checkout
-        </Button>
       </CardContent>
     </Paper>
   )

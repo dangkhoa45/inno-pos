@@ -80,17 +80,24 @@ const ProductFilterPopover: React.FC<ProductFilterPopoverProps> = ({
       onClose={onClose}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      PaperProps={{ sx: { p: 2, minWidth: 1200, maxWidth: 1500 } }}
+      PaperProps={{
+        sx: {
+          p: { xs: 1, sm: 2 },
+          minWidth: { xs: '90vw', sm: 800, md: 1200 },
+          maxWidth: { xs: '95vw', sm: 1200, md: 1500 },
+          maxHeight: { xs: '80vh', sm: '70vh' },
+        },
+      }}
     >
-      <Grid container spacing={1}>
-        <Grid size={{ xs: 4 }}>
+      <Grid container spacing={{ xs: 1, sm: 1 }}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <GroupFilter
             value={selectedGroups}
             onChange={setSelectedGroups}
             options={GROUP_TREE}
           />
         </Grid>
-        <Grid size={{ xs: 4 }}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <BrandFilter
             value={selectedBrands}
             onChange={setSelectedBrands}
@@ -102,7 +109,7 @@ const ProductFilterPopover: React.FC<ProductFilterPopoverProps> = ({
             options={SPECS}
           />
         </Grid>
-        <Grid size={{ xs: 4 }}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <Typography fontWeight="bold">Lọc theo màu sắc</Typography>
             <ColorFilter
@@ -122,7 +129,11 @@ const ProductFilterPopover: React.FC<ProductFilterPopoverProps> = ({
         <Button
           variant="contained"
           onClick={handleApply}
-          sx={{ minWidth: 120, fontWeight: 'bold' }}
+          sx={{
+            minWidth: { xs: 100, sm: 120 },
+            fontWeight: 'bold',
+            fontSize: { xs: '0.8rem', sm: '1rem' },
+          }}
         >
           Xác nhận
         </Button>
