@@ -37,9 +37,6 @@ const style = {
 }
 
 const AddCustomerModal = ({ open, onClose }: AddCustomerModalProps) => {
-  // Force re-render with timestamp
-  console.log('AddCustomerModal rendered at:', new Date().toISOString())
-
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={style}>

@@ -11,12 +11,10 @@ interface QRCodeProps {
 }
 
 const QRCode: React.FC<QRCodeProps> = ({
-  value,
+  value: _value,
   size = 150,
   showText = false,
 }) => {
-  console.log('🚀 ~ value:', value)
-
   return (
     <Box
       sx={{

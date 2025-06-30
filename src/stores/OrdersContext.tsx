@@ -32,8 +32,7 @@ export const OrdersProvider = ({ children }: OrdersProviderProps) => {
     try {
       const savedOrders = localStorage.getItem('orders')
       return savedOrders ? JSON.parse(savedOrders) : []
-    } catch (error) {
-      console.error('Failed to parse orders from localStorage', error)
+    } catch (_error) {
       return []
     }
   })
@@ -41,8 +40,8 @@ export const OrdersProvider = ({ children }: OrdersProviderProps) => {
   useEffect(() => {
     try {
       localStorage.setItem('orders', JSON.stringify(orders))
-    } catch (error) {
-      console.error('Failed to save orders to localStorage', error)
+    } catch (_error) {
+      // Silently fail if localStorage is not available
     }
   }, [orders])
 
@@ -55,4 +54,4 @@ export const OrdersProvider = ({ children }: OrdersProviderProps) => {
       {children}
     </OrdersContext.Provider>
   )
-} 
+}

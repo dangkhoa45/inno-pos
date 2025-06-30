@@ -26,7 +26,6 @@ export default function Payment() {
 
   useEffect(() => {
     if (!orderData) {
-      console.log('No order data found, redirecting to sale page')
       navigate({ to: '/sale' })
     }
   }, [orderData, navigate])
@@ -77,44 +76,15 @@ export default function Payment() {
     setIsProcessing(true)
 
     try {
-      console.log('Processing final payment:', {
-        orderId: orderData.orderId,
-        paymentMethod: paymentData.paymentMethod,
-        totalAmount: orderData.totalAmount,
-        totalPaid: paymentData.totalPaid,
-        changeAmount: paymentData.changeAmount,
-        customer: orderData.customer,
-        items: orderData.cartItems,
-        splitPayments: paymentData.splitPayments,
-        timestamp: new Date().toISOString(),
-      })
-
       // Simulate API call - replace with actual payment processing
       await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // Save payment record (in real app, this would be API call)
-      const paymentRecord = {
-        orderId: orderData.orderId,
-        customerId: orderData.customer?.id,
-        customerName: orderData.customer?.name,
-        totalAmount: orderData.totalAmount,
-        paidAmount: paymentData.totalPaid,
-        changeAmount: paymentData.changeAmount,
-        paymentMethod: paymentData.paymentMethod,
-        splitPayments: paymentData.splitPayments,
-        status: 'completed',
-        completedAt: new Date().toISOString(),
-      }
-
-      console.log('Payment completed successfully:', paymentRecord)
 
       // Store payment data for receipt
       setCompletedPaymentData(paymentData)
 
       // Show receipt dialog instead of alert
       setShowReceipt(true)
-    } catch (error) {
-      console.error('Payment error:', error)
+    } catch (_error) {
       alert('An error occurred during payment processing!')
     } finally {
       // Clear loading state

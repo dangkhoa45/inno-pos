@@ -40,7 +40,7 @@ interface CustomerFormData {
 
 const DialogFormCustomer = ({ open, onClose }: DialogFormCustomerProps) => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
-  const [faceImages, setFaceImages] = useState<{
+  const [_faceImages, setFaceImages] = useState<{
     left: string | null
     center: string | null
     right: string | null
@@ -112,7 +112,7 @@ const DialogFormCustomer = ({ open, onClose }: DialogFormCustomerProps) => {
 
   const handleSave = () => {
     // Handle save logic here
-    console.log('Saving customer data:', { ...formData, avatarUrl, faceImages })
+    // TODO: Save customer data
     handleClose()
   }
 

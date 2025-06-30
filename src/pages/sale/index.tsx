@@ -83,31 +83,11 @@ const useCart = () => {
   }
 }
 
-const processCheckout = async (
-  _customer: Customer | null,
-  _cartItems: CartItem[],
-  _total: number,
-) => {
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    return { success: true, message: 'Payment successful!' }
-  } catch (_error) {
-    return { success: false, message: 'Payment failed!' }
-  }
-}
-
 function SalePage() {
   const navigate = useNavigate()
   const { setOrderData } = useOrder()
-  const {
-    cartItems,
-    addToCart,
-    updateQuantity,
-    removeItem,
-    clearCart,
-    getTotal,
-    getTotalItems,
-  } = useCart()
+  const { cartItems, addToCart, updateQuantity, removeItem, getTotalItems } =
+    useCart()
 
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null,
@@ -134,7 +114,16 @@ function SalePage() {
     setOpenCreateCustomer(false)
   }
 
-  const handleCheckout = async () => {
+  const handleCheckout = (orderDetails: {
+    subtotal: number
+    discount: number
+    discountType: 'percent' | 'amount'
+    discountAmount: number
+    vatAmount: number
+    redeemPoints: number
+    total: number
+    selectedPaymentMethod: string
+  }) => {
     // Validate cart is not empty
     if (cartItems.length === 0) {
       setAlertMessage('Cart is empty! Please add products before checkout.')
@@ -152,31 +141,29 @@ function SalePage() {
     }
 
     try {
-      const total = getTotal()
       const totalQuantity = getTotalItems()
 
       // Save order data to context before checkout
       const orderData = {
         customer: selectedCustomer,
         cartItems,
-        totalAmount: total,
+        subtotal: orderDetails.subtotal,
+        discount: orderDetails.discount,
+        discountType: orderDetails.discountType,
+        discountAmount: orderDetails.discountAmount,
+        vatAmount: orderDetails.vatAmount,
+        redeemPoints: orderDetails.redeemPoints,
+        totalAmount: orderDetails.total,
         totalQuantity,
+        selectedPaymentMethod: orderDetails.selectedPaymentMethod,
         orderId: `ORD-${Date.now()}`,
         timestamp: new Date().toISOString(),
       }
 
       setOrderData(orderData)
 
-      const result = await processCheckout(selectedCustomer, cartItems, total)
-
-      if (result.success) {
-        clearCart()
-        setSuccessDialogOpen(true)
-      } else {
-        setAlertMessage(result.message || 'Checkout failed!')
-        setAlertSeverity('error')
-        setAlertOpen(true)
-      }
+      // Navigate to payment page
+      navigate({ to: '/payment' })
     } catch (_error) {
       setAlertMessage('An error occurred during checkout!')
       setAlertSeverity('error')

@@ -1,20 +1,20 @@
 import React from 'react'
 
-import DeleteIcon from '@mui/icons-material/Delete'
 import PersonIcon from '@mui/icons-material/Person'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import CardContent from '@mui/material/CardContent'
 import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
 import Paper from '@mui/material/Paper'
 import { useTheme } from '@mui/material/styles'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
-
-import { mockCustomerData, mockOrderData } from '../../../mockup'
-import DiscountSection from '../../sale/components/DiscountSection'
 
 import type { OrderData } from '../../../stores/OrderContext'
 
@@ -25,66 +25,57 @@ interface OrderSummaryProps {
 
 const OrderSummary: React.FC<OrderSummaryProps> = ({
   orderData,
-  onRemoveItem,
+  onRemoveItem: _onRemoveItem,
 }) => {
   const theme = useTheme()
-  const [discount, setDiscount] = React.useState(0)
-  const [discountType, setDiscountType] = React.useState<'percent' | 'amount'>(
-    'percent',
-  )
 
-  console.log('OrderSummary received orderData:', orderData)
-
-  const handleRemoveItem = (productId: string) => {
-    if (onRemoveItem) {
-      onRemoveItem(productId)
-    }
+  // Early return if no order data
+  if (!orderData) {
+    return (
+      <Paper
+        elevation={0}
+        sx={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          border: 1,
+          borderColor: 'divider',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Typography variant="h6" color="text.secondary">
+          No order data available
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Please go back to the sale page
+        </Typography>
+      </Paper>
+    )
   }
 
-  const displayData = orderData || {
-    customer: null,
-    cartItems: mockOrderData.items.map((item) => ({
-      product: {
-        id: item.id,
-        name: item.name,
-        price: item.unitPrice,
-        itemCode: item.itemCode,
-        category: '',
-        image: '',
-        inStock: true,
-        stock: 10,
-      },
-      quantity: item.quantity,
-    })),
-    totalAmount: mockOrderData.grandTotal,
-    totalQuantity: mockOrderData.totalQuantity,
-    orderId: mockOrderData.customerId,
-    timestamp: new Date().toISOString(),
+  // Use orderData directly - all calculations are done in sale page
+  const {
+    customer,
+    cartItems,
+    subtotal,
+    discount,
+    discountType,
+    discountAmount,
+    vatAmount,
+    redeemPoints,
+    totalAmount: grandTotal,
+    totalQuantity,
+  } = orderData
+
+  const getUOM = (product: any) => {
+    return product.uom || 'PCS'
   }
 
-  // Use real data calculations when orderData is available
-  const subtotal = orderData
-    ? orderData.cartItems.reduce(
-        (sum, item) => sum + item.product.price * item.quantity,
-        0,
-      )
-    : displayData.totalAmount
-
-  const totalQuantity = orderData
-    ? orderData.cartItems.reduce((sum, item) => sum + item.quantity, 0)
-    : displayData.totalQuantity
-
-  const customer = displayData.customer || {
-    id: mockCustomerData.id,
-    name: mockCustomerData.name,
-    phone: mockCustomerData.phone,
-    email: mockCustomerData.email,
+  const getItemCode = (product: any) => {
+    return product.itemCode || product.id.substring(0, 8).toUpperCase()
   }
-
-  // Calculate discount amount and final total
-  const discountAmount =
-    discountType === 'percent' ? (subtotal * discount) / 100 : discount
-  const grandTotal = Math.max(0, subtotal - discountAmount)
 
   return (
     <Paper
@@ -94,20 +85,20 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        border: 1,
-        borderColor: 'divider',
+        border: 2,
+        borderColor: theme.palette.primary.main,
+        borderRadius: 2,
       }}
     >
       <CardContent
         sx={{
-          flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
+          height: '100%',
           p: 2,
-          '&:last-child': { pb: 2 },
+          '&:last-child': { pb: 0 },
         }}
       >
-        {/* Customer Info Section */}
         <Box sx={{ mb: 2, pb: 2, borderBottom: 1, borderColor: 'divider' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Avatar sx={{ width: 48, height: 48 }}>
@@ -115,199 +106,333 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
             </Avatar>
             <Box sx={{ flex: 1 }}>
               <Typography variant="h6" component="div">
-                {customer.name || displayData.orderId}
+                {customer?.name || 'Guest Customer'}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {customer.phone}
+                {customer?.phone || 'No phone number'}
               </Typography>
             </Box>
           </Box>
         </Box>
 
-        {/* Item Cart Header */}
-        <Typography variant="body1" fontWeight="bold" mb={1}>
-          Item Cart
-        </Typography>
-
-        {/* Items List */}
-        <Box sx={{ overflow: 'auto', flexGrow: 1, height: 280, mx: -1, px: 1 }}>
-          <Box
-            sx={{
-              flexGrow: 1,
-              overflow: 'auto',
-              mb: 2,
-              '&::-webkit-scrollbar': {
-                width: '8px',
-              },
-              '&::-webkit-scrollbar-track': {
-                background: theme.palette.grey[100],
-              },
-              '&::-webkit-scrollbar-thumb': {
-                background: theme.palette.grey[600],
-                borderRadius: 1,
-              },
-            }}
-          >
-            <List dense disablePadding>
-              {displayData.cartItems.map((item) => (
-                <ListItem
-                  key={item.product.id}
+        <TableContainer
+          sx={{
+            mb: 2,
+            maxHeight: cartItems.length > 3 ? '240px' : 'auto',
+            minHeight: '120px',
+            overflow: 'auto',
+            border: 1,
+            borderColor: 'divider',
+            borderRadius: 1,
+          }}
+        >
+          <Table size="small" stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  sx={{ fontWeight: 'bold', fontSize: '0.9rem', minWidth: 140 }}
+                >
+                  Item
+                </TableCell>
+                <TableCell
                   sx={{
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    borderRadius: 1,
-                    mb: 1,
+                    fontWeight: 'bold',
+                    fontSize: '0.9rem',
+                    textAlign: 'center',
+                    minWidth: 60,
                   }}
                 >
-                  <Box sx={{ width: '100%', py: 0.5 }}>
-                    <Box
+                  UOM
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '0.9rem',
+                    textAlign: 'center',
+                    minWidth: 100,
+                  }}
+                >
+                  Quantity
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '0.9rem',
+                    textAlign: 'right',
+                    minWidth: 100,
+                  }}
+                >
+                  Unit Price
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '0.9rem',
+                    textAlign: 'right',
+                    minWidth: 100,
+                  }}
+                >
+                  Amount
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {cartItems.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
+                    <ShoppingCartIcon
                       sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mb: 0.5,
+                        fontSize: 32,
+                        color: 'text.secondary',
+                        mb: 1,
+                        display: 'block',
+                        mx: 'auto',
                       }}
-                    >
-                      <Typography variant="body2" noWrap>
-                        {item.product.name}
-                      </Typography>
+                    />
+                    <Typography variant="body2" color="text.secondary">
+                      No items in the cart
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                cartItems.map((item) => (
+                  <TableRow key={item.product.id}>
+                    <TableCell>
                       <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 0.5,
-                        }}
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                       >
-                        <Typography
-                          variant="caption"
+                        <Avatar
+                          src={item.product.image}
                           sx={{
-                            minWidth: 16,
-                            textAlign: 'center',
-                            fontSize: '0.75rem',
-                            fontWeight: 'bold',
+                            width: 32,
+                            height: 32,
+                            bgcolor: theme.palette.grey[200],
                           }}
                         >
-                          x{item.quantity}
-                        </Typography>
+                          📦
+                        </Avatar>
+                        <Box>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontSize: '0.85rem',
+                              fontWeight: 500,
+                              lineHeight: 1.2,
+                              maxWidth: 120,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {item.product.name}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{ fontSize: '0.7rem' }}
+                          >
+                            Item Code: {getItemCode(item.product)}
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
+                    </TableCell>
 
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Box>
-                        <Typography variant="caption" fontWeight={'bold'}>
-                          VND {item.product.price.toLocaleString()}
-                        </Typography>
-                      </Box>
-                      <Box
+                    <TableCell sx={{ textAlign: 'center' }}>
+                      <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>
+                        {getUOM(item.product)}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell sx={{ textAlign: 'center' }}>
+                      <Typography
+                        variant="body2"
                         sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1,
+                          fontSize: '0.85rem',
+                          fontWeight: 500,
+                          bgcolor: theme.palette.grey[100],
+                          px: 1,
+                          py: 0.5,
+                          borderRadius: 1,
+                          minWidth: 24,
                         }}
                       >
-                        <Typography
-                          variant="caption"
-                          fontWeight="bold"
-                          sx={{ fontSize: '0.75rem' }}
-                        >
-                          VND{' '}
-                          {(
-                            item.product.price * item.quantity
-                          ).toLocaleString()}
-                        </Typography>
-                        <IconButton
-                          size="small"
-                          color="error"
-                          sx={{ p: 0.25 }}
-                          onClick={() => handleRemoveItem(item.product.id)}
-                        >
-                          <DeleteIcon sx={{ fontSize: 16 }} />
-                        </IconButton>
-                      </Box>
-                    </Box>
-                  </Box>
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        </Box>
+                        {item.quantity}
+                      </Typography>
+                    </TableCell>
 
-        <Divider sx={{ mb: 1.5 }} />
+                    <TableCell sx={{ textAlign: 'right' }}>
+                      <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>
+                        VND {item.product.price.toLocaleString()}
+                      </Typography>
+                    </TableCell>
 
-        {/* Discount Section */}
-        <DiscountSection
-          discount={discount}
-          discountType={discountType}
-          onDiscountChange={setDiscount}
-          onDiscountTypeChange={setDiscountType}
-          disabled={displayData.cartItems.length === 0}
-        />
+                    <TableCell sx={{ textAlign: 'right' }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontSize: '0.8rem', fontWeight: 500 }}
+                      >
+                        VND{' '}
+                        {(item.product.price * item.quantity).toLocaleString()}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-        {/* Summary Section */}
-        <Box>
+        <Box sx={{ flexGrow: 1 }} />
+
+        <Box sx={{ mt: 'auto' }}>
           <Box
             sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              mb: 0.5,
+              mb: 3,
+              p: 2,
+              bgcolor: theme.palette.grey[50],
+              borderRadius: 1,
+              border: 1,
+              borderColor: 'divider',
             }}
           >
-            <Typography variant="body2">Total Quantity</Typography>
-            <Typography variant="body2" fontWeight="bold">
-              {totalQuantity}
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              mb: 0.5,
-            }}
-          >
-            <Typography variant="body2">Net total</Typography>
-            <Typography variant="body2">
-              VND {subtotal.toLocaleString()}
-            </Typography>
-          </Box>
-
-          {discountAmount > 0 && (
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                mb: 0.5,
-              }}
+            <Typography
+              variant="body1"
+              fontWeight="bold"
+              sx={{ mb: 1, fontSize: '0.9rem' }}
             >
-              <Typography variant="body2" color="error">
-                Discount
+              Promotions/Discount
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                Discount Type:{' '}
+                {discountType === 'percent' ? 'Percentage' : 'Fixed Amount'}
               </Typography>
-              <Typography variant="body2" color="error">
-                -VND {discountAmount.toLocaleString()}
+              <Typography variant="body2" fontWeight="bold">
+                {discountType === 'percent'
+                  ? `${discount}%`
+                  : `VND ${discount.toLocaleString()}`}
               </Typography>
             </Box>
-          )}
+            {redeemPoints > 0 && (
+              <Box
+                sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}
+              >
+                <Typography variant="body2" color="text.secondary">
+                  Redeem Points:
+                </Typography>
+                <Typography variant="body2" fontWeight="bold" color="primary">
+                  VND {redeemPoints.toLocaleString()}
+                </Typography>
+              </Box>
+            )}
+          </Box>
 
-          <Divider sx={{ my: 1 }} />
+          <Box>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}
+            >
+              <Typography variant="body2" sx={{ fontSize: '0.85rem' }}>
+                Total Quantity
+              </Typography>
+              <Typography
+                variant="body2"
+                fontWeight="bold"
+                sx={{ fontSize: '0.85rem' }}
+              >
+                {totalQuantity}
+              </Typography>
+            </Box>
 
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Typography variant="h6" fontWeight="bold">
-              Grand Total
-            </Typography>
-            <Typography variant="h6" fontWeight="bold">
-              VND {grandTotal.toLocaleString()}
-            </Typography>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}
+            >
+              <Typography variant="body2" sx={{ fontSize: '0.85rem' }}>
+                Net Total
+              </Typography>
+              <Typography variant="body2" sx={{ fontSize: '0.85rem' }}>
+                VND {subtotal.toLocaleString()}
+              </Typography>
+            </Box>
+
+            {discountAmount > 0 && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  mb: 0.5,
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  color="error"
+                  sx={{ fontSize: '0.85rem' }}
+                >
+                  Discount {discountType === 'percent' ? `(${discount}%)` : ''}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="error"
+                  sx={{ fontSize: '0.85rem' }}
+                >
+                  -VND {discountAmount.toLocaleString()}
+                </Typography>
+              </Box>
+            )}
+
+            {vatAmount > 0 && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  mb: 0.5,
+                }}
+              >
+                <Typography variant="body2" sx={{ fontSize: '0.85rem' }}>
+                  VAT (10%)
+                </Typography>
+                <Typography variant="body2" sx={{ fontSize: '0.85rem' }}>
+                  VND {vatAmount.toLocaleString()}
+                </Typography>
+              </Box>
+            )}
+
+            {redeemPoints > 0 && (
+              <Box
+                sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}
+              >
+                <Typography variant="body2" sx={{ fontSize: '0.85rem' }}>
+                  Redeem Points
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="primary"
+                  sx={{ fontSize: '0.85rem' }}
+                >
+                  -VND {redeemPoints.toLocaleString()}
+                </Typography>
+              </Box>
+            )}
+
+            <Divider sx={{ my: 1 }} />
+
+            <Box
+              sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}
+            >
+              <Typography
+                variant="h6"
+                fontWeight="bold"
+                sx={{ fontSize: '1.1rem' }}
+              >
+                Grand Total
+              </Typography>
+              <Typography
+                variant="h6"
+                fontWeight="bold"
+                sx={{ fontSize: '1.1rem' }}
+              >
+                VND {Math.max(0, grandTotal).toLocaleString()}
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </CardContent>

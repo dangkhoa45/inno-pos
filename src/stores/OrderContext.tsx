@@ -10,8 +10,15 @@ import type { CartItem, Customer } from '../types/sale'
 export interface OrderData {
   customer: Customer | null
   cartItems: CartItem[]
+  subtotal: number
+  discount: number
+  discountType: 'percent' | 'amount'
+  discountAmount: number
+  vatAmount: number
+  redeemPoints: number
   totalAmount: number
   totalQuantity: number
+  selectedPaymentMethod?: string
   orderId?: string
   timestamp?: string
   notes?: string

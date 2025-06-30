@@ -34,8 +34,8 @@ const ProductList = ({ onAddToCart, cartItems }: ProductListProps) => {
     setFilteredProducts(products)
   }
 
-  const handleFiltersChange = (filters: FilterOptions) => {
-    console.log('Filters changed:', filters)
+  const handleFiltersChange = (_filters: FilterOptions) => {
+    // Handle filters change
   }
 
   // Helper function to check if a product is in cart

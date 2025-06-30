@@ -50,8 +50,6 @@ const GroupFilter: React.FC<GroupFilterProps> = ({
     )
   }
 
-  console.log('GroupFilter options', options)
-
   return (
     <Box>
       <Typography fontWeight="bold" fontSize={14} mb={0.5}>

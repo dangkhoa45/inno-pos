@@ -11,10 +11,13 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 import QRCode from '../../../components/QRCode'
+import {
+  PROCESSING_PAYMENT_METHODS,
+  mapSaleToProcessingMethod,
+} from '../../../types/sale'
 
 import type { OrderData } from '../../../stores/OrderContext'
-
-type PaymentMethod = 'cash' | 'card' | 'bank' | 'ewallet' | 'points'
+import type { ProcessingPaymentMethod } from '../../../types/sale'
 
 interface PaymentFormProps {
   orderData: OrderData | null
@@ -22,10 +25,13 @@ interface PaymentFormProps {
   onPaymentMethodChange?: (method: string) => void
   isProcessing?: boolean
   onCompleteOrder: (paymentData: {
-    paymentMethod: PaymentMethod
+    paymentMethod: ProcessingPaymentMethod
     totalPaid: number
     changeAmount: number
-    splitPayments?: Array<{ method: PaymentMethod; amount: string }>
+    splitPayments?: Array<{
+      method: ProcessingPaymentMethod
+      amount: string
+    }>
   }) => void
 }
 
@@ -37,7 +43,17 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   const grandTotal = orderData?.totalAmount || 0
   const orderId = orderData?.orderId || 'ORDER-001'
 
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('cash')
+  // Map payment method from sale page to processing method
+  const getInitialPaymentMethod = (): ProcessingPaymentMethod => {
+    if (orderData?.selectedPaymentMethod) {
+      return mapSaleToProcessingMethod(orderData.selectedPaymentMethod)
+    }
+    return 'cash'
+  }
+
+  const [selectedMethod, setSelectedMethod] = useState<ProcessingPaymentMethod>(
+    getInitialPaymentMethod(),
+  )
   const [enableSplitPayment, setEnableSplitPayment] = useState(false)
 
   const [paidAmount, setPaidAmount] = useState<string>('')
@@ -45,16 +61,18 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   const [paymentError, setPaymentError] = useState<string>('')
 
   const [splitPayments, setSplitPayments] = useState<
-    { method: PaymentMethod; amount: string }[]
+    { method: ProcessingPaymentMethod; amount: string }[]
   >([])
 
-  const paymentMethods = [
-    { key: 'cash' as PaymentMethod, label: 'Cash' },
-    { key: 'card' as PaymentMethod, label: 'Card' },
-    { key: 'bank' as PaymentMethod, label: 'Bank Transfer' },
-    { key: 'ewallet' as PaymentMethod, label: 'E-wallet' },
-    { key: 'points' as PaymentMethod, label: 'Points' },
-  ]
+  // Update selected method when orderData changes
+  useEffect(() => {
+    if (orderData?.selectedPaymentMethod) {
+      const mappedMethod = mapSaleToProcessingMethod(
+        orderData.selectedPaymentMethod,
+      )
+      setSelectedMethod(mappedMethod)
+    }
+  }, [orderData?.selectedPaymentMethod])
 
   useEffect(() => {
     if (!enableSplitPayment) {
@@ -206,6 +224,14 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       ) >= grandTotal
     : parseFloat(paidAmount) >= grandTotal
 
+  // Get method label for selected method
+  const getSelectedMethodLabel = () => {
+    const method = PROCESSING_PAYMENT_METHODS.find(
+      (m) => m.key === selectedMethod,
+    )
+    return method?.label || 'Unknown'
+  }
+
   return (
     <Box
       sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}
@@ -227,7 +253,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         {/* Payment Method Selection */}
         <Box sx={{ mb: 2 }}>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {paymentMethods.map((method) => (
+            {PROCESSING_PAYMENT_METHODS.map((method) => (
               <Chip
                 key={method.key}
                 label={method.label}
@@ -266,8 +292,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           {!enableSplitPayment ? (
             <>
               <Typography variant="body2" sx={{ mb: 1 }}>
-                {paymentMethods.find((m) => m.key === selectedMethod)?.label}{' '}
-                Payment
+                {getSelectedMethodLabel()} Payment
               </Typography>
               <TextField
                 fullWidth
@@ -332,7 +357,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
                   <Box
                     sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 2 }}
                   >
-                    {paymentMethods.map((method) => (
+                    {PROCESSING_PAYMENT_METHODS.map((method) => (
                       <Chip
                         key={method.key}
                         label={method.label}
@@ -473,9 +498,100 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
 
         {/* Payment Summary */}
         <Box sx={{ mt: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-            <Typography variant="body2">Grand Total</Typography>
-            <Typography variant="body2" fontWeight="bold">
+          <Typography variant="body1" fontWeight="bold" mb={1}>
+            Order Summary
+          </Typography>
+
+          {/* Order Breakdown */}
+          {orderData && (
+            <>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  mb: 0.5,
+                }}
+              >
+                <Typography variant="body2" color="text.secondary">
+                  Subtotal
+                </Typography>
+                <Typography variant="body2">
+                  VND {orderData.subtotal.toLocaleString()}
+                </Typography>
+              </Box>
+
+              {orderData.discountAmount > 0 && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    mb: 0.5,
+                  }}
+                >
+                  <Typography variant="body2" color="error">
+                    Discount (
+                    {orderData.discountType === 'percent'
+                      ? `${orderData.discount}%`
+                      : 'Amount'}
+                    )
+                  </Typography>
+                  <Typography variant="body2" color="error">
+                    -VND {orderData.discountAmount.toLocaleString()}
+                  </Typography>
+                </Box>
+              )}
+
+              {orderData.vatAmount > 0 && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    mb: 0.5,
+                  }}
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    VAT (10%)
+                  </Typography>
+                  <Typography variant="body2">
+                    VND {orderData.vatAmount.toLocaleString()}
+                  </Typography>
+                </Box>
+              )}
+
+              {orderData.redeemPoints > 0 && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    mb: 0.5,
+                  }}
+                >
+                  <Typography variant="body2" color="primary">
+                    Redeem Points
+                  </Typography>
+                  <Typography variant="body2" color="primary">
+                    -VND {orderData.redeemPoints.toLocaleString()}
+                  </Typography>
+                </Box>
+              )}
+            </>
+          )}
+
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              mb: 1,
+              mt: 1,
+              pt: 1,
+              borderTop: 1,
+              borderColor: 'divider',
+            }}
+          >
+            <Typography variant="body1" fontWeight="bold">
+              Grand Total
+            </Typography>
+            <Typography variant="body1" fontWeight="bold">
               VND {grandTotal.toLocaleString()}
             </Typography>
           </Box>
